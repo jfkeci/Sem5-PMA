@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "105159506146",
+    "project_id": "caltodo-27ad3",
+    "storage_bucket": "caltodo-27ad3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105159506146:android:56a623e0cc60cf08d446bb",
+        "android_client_info": {
+          "package_name": "com.example.focusapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "105159506146-0sapm0vmdekjh45j1icrsri7goag832t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvNIgfM_uO7C9wf_2iNRw2a8Ot7r1aMSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "105159506146-0sapm0vmdekjh45j1icrsri7goag832t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
