@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.ToDoFragment"
-    android:background="@android:color/darker_gray">
+    tools:context=".Fragments.ToDoFragment">
 
     <TextView
         android:id="@+id/twpending"
@@ -28,7 +27,6 @@
         app:layout_constraintBottom_toTopOf="@id/twdone"
         android:padding="8dp"
         android:scrollbars="vertical"
-        android:background="@android:color/darker_gray"
         />
 
 
@@ -54,7 +52,6 @@
         app:layout_constraintTop_toBottomOf="@id/twdone"
         android:padding="8dp"
         android:scrollbars="vertical"
-        android:background="@android:color/darker_gray"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

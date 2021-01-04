@@ -27,6 +27,7 @@ public class FragmentHolderActivity extends AppCompatActivity {
                 tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+
                 switch(position){
                     case 0: {
                         tab.setText("ToDo");

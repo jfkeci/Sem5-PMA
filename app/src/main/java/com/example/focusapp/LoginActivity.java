@@ -101,6 +101,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String uid = user.getUid();
                 if(task.isSuccessful()){
                     progressBar.setVisibility(View.GONE);
+                    dbHelper.setCurrentUser(uid, "username", email);
                     startActivity(new Intent(LoginActivity.this, FragmentHolderActivity.class));
                 }else{
                     Toast.makeText(LoginActivity.this, "Failed to login, please check your credentials!", Toast.LENGTH_LONG).show();

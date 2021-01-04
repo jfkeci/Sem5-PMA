@@ -34,6 +34,7 @@ import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +44,8 @@ import java.util.List;
 
 public class CalendarFragment extends Fragment  implements AdapterView.OnItemSelectedListener{
 
-    public String eventTypeSelected, dateSelected;
+    public String eventTypeSelected;
+    public String dateSelected="";
     int nHour, nMinute;
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
@@ -104,7 +106,11 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         InitButtonSaveEvent();
 
         eventsList = allEventsList();
-        InitRecycleView(eventsList, 1);
+
+        if(eventsList.size()>=1){
+            InitRecycleView(eventsList, 1);
+        }
+
 
         return v;
     }
@@ -137,7 +143,9 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                 String selectedDateAndTime = sdf.format(dateClicked);
 
+
                 InitRecycleView(allEventsByDateList(dateSelected),1);
+
             }
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
@@ -202,7 +210,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                 String eventContent = editTextEvent.getText().toString();
                 String datetime = makeDateAndTime(dateSelected, textViewTime.getText().toString());
 
-                if(dateSelected.equals(null) || dateSelected==null){
+                if(dateSelected.equals("")){
                     makeMyToast("Not ready yet", "Set a date for your "+eventTypeSelected, 0);
                 }
                 if(eventContent.length()<1){
@@ -223,7 +231,15 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                     textViewTime.setText("00:00");
                     editTextEvent.setText("Add new event");
 
-                    InitRecycleView(allEventsByDateList(dateSelected),1);
+
+                    ArrayList<Events> list = allEventsByDateList(dateSelected);
+
+                    if(list.size()>=1){
+                        InitRecycleView(list,1);
+                    }
+
+
+
                 }
             }
         });

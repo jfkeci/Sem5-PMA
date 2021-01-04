@@ -67,20 +67,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
         }
 
         public void bindView(int position){
-            textContent.setText(eventsList.get(position).getEVENT_CONTENT());
-            textDate.setText(eventsList.get(position).getEVENT_DATE_TIME());
 
-            if((eventsList.get(position).getEVENT_TYPE()).equals("Event")){
-                typeIcon.setImageResource(R.drawable.ic_baseline_calendar_today_24);
-            }
-            if((eventsList.get(position).getEVENT_TYPE()).equals("Reminder")){
-                typeIcon.setImageResource(R.drawable.ic_baseline_notifications_24);
-            }
-            if((eventsList.get(position).getEVENT_TYPE()).equals("ToDo")){
-                typeIcon.setVisibility(View.INVISIBLE);
-                eventCheckbox.setVisibility(View.VISIBLE);
-            }
+            if(eventsList.size()>=1){
+                textContent.setText(eventsList.get(position).getEVENT_CONTENT());
+                textDate.setText(eventsList.get(position).getEVENT_DATE_TIME());
 
+                if((eventsList.get(position).getEVENT_TYPE()).equals("Event")){
+                    typeIcon.setImageResource(R.drawable.ic_baseline_calendar_today_24);
+                }
+                if((eventsList.get(position).getEVENT_TYPE()).equals("Reminder")){
+                    typeIcon.setImageResource(R.drawable.ic_baseline_notifications_24);
+                }
+                if((eventsList.get(position).getEVENT_TYPE()).equals("ToDo")){
+                    typeIcon.setVisibility(View.INVISIBLE);
+                    eventCheckbox.setVisibility(View.VISIBLE);
+                }
+            }
         }
         public void onClick(View view){
 

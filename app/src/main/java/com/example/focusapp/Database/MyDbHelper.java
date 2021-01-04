@@ -9,7 +9,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import com.example.focusapp.Models.Events;
+import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.User;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MyDbHelper extends SQLiteOpenHelper {
 
@@ -176,4 +181,44 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }
         return user;
     }
+
+    public boolean addNewNote(String uid, String note_title, String note_content, String note_DateTime){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL32, uid);
+        contentValues.put(COL33, note_title);
+        contentValues.put(COL34, note_content);
+        contentValues.put(COL35, note_DateTime);
+
+        long result = db.insert(TABLE_NOTES, null, contentValues);
+
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public Cursor getAllNotes(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NOTES, null);
+        return res;
+    }
+
+    public boolean updateNote(Notes note){
+        String nid = String.valueOf(note.getNOTE_ID());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL32, note.getUSER_ID());
+        contentValues.put(COL33, note.getNOTE_TITLE());
+        contentValues.put(COL34, note.getNOTE_CONTENT());
+        contentValues.put(COL35, note.getNOTE_DATE_TIME());
+        db.update(TABLE_NOTES, contentValues, "NOTE_ID = ?", new String[]{nid});
+
+        return true;
+    }
+
 }

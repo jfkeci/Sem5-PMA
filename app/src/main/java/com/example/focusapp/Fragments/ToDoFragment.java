@@ -46,8 +46,13 @@ public class ToDoFragment extends Fragment {
 
         eventsList = allEventsList(0);
         eventsCheckedList = allEventsList(1);
-        InitRecycleView(eventsList, 1);
-        InitRecycleViewChecked(eventsCheckedList, 1);
+
+        if(eventsList.size()>=1){
+            InitRecycleView(eventsList, 1);
+        }
+
+
+        //InitRecycleViewChecked(eventsCheckedList, 1);
 
 
         return v;
@@ -73,9 +78,6 @@ public class ToDoFragment extends Fragment {
 
         Cursor res = dbHelper.getAllEventsByCheck(check);
 
-        if(res.getCount() == 0){
-            makeMyToast("Error", "No events found", 0);
-        }
         StringBuffer buffer = new StringBuffer();
         while(res.moveToNext()){
 

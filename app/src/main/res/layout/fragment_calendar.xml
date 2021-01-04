@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.CalendarFragment"
-    android:background="@android:color/darker_gray">
+    tools:context=".Fragments.CalendarFragment">
 
     <ImageButton
         android:id="@+id/buttonPrev"
@@ -44,7 +43,6 @@
         android:layout_height="300dp"
         app:compactCalendarTargetHeight="300dp"
         app:compactCalendarTextSize="12sp"
-        app:compactCalendarBackgroundColor="@android:color/darker_gray"
         app:compactCalendarTextColor="@color/black"
         app:compactCalendarCurrentSelectedDayBackgroundColor="#E57373"
         app:compactCalendarCurrentDayBackgroundColor="#B71C1C"
@@ -73,7 +71,7 @@
         app:layout_constraintTop_toTopOf="@id/editTextEvent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="10dp"
-        android:background="@drawable/ic_baseline_add_circle_24" />
+        android:background="@drawable/ic_baseline_add_circle_22" />
 
     <TextView
         android:id="@+id/textViewEventType"
@@ -126,7 +124,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/eventTypeSpinner"
         android:scrollbars="vertical"
-        android:background="@android:color/darker_gray"
         android:padding="8dp"
         />
 
