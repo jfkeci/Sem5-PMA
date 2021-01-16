@@ -5,16 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.focusapp.Models.Events;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.focusapp.Models.Notes;
 import com.example.focusapp.R;
 
@@ -72,21 +68,21 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter {
                 String mainContent = "";
                 String mainTitle = "";
 
-                if(content.length() > 55){
-                    for(int i=0;i<55;i++){
+                if(content.length() > 45){
+                    for(int i=0;i<45;i++){
                         mainContent = mainContent+content.charAt(i);
                     }
                     mainContent = mainContent+"...";
-                }if(content.length()<55){
+                }if(content.length()<45){
                     mainContent = content;
                 }
 
-                if(title.length() > 18){
-                    for(int i=0;i<18;i++){
+                if(title.length() > 14){
+                    for(int i=0;i<14;i++){
                         mainTitle = mainTitle+title.charAt(i);
                     }
                     mainTitle = mainTitle+"...";
-                }if(title.length()<18){
+                }if(title.length()<14){
                     mainTitle = title;
                 }
 

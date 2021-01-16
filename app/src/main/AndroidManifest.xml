@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FocusApp">
-        <activity android:name=".NewNoteActivity"></activity>
+        <activity android:name=".AppLockListActivity"></activity>
         <activity android:name=".FragmentHolderActivity" />
         <activity android:name=".RegisterUserActivity" />
         <activity android:name=".LoginActivity" />
@@ -21,6 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".Recievers.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>

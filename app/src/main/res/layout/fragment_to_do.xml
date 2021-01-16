@@ -4,54 +4,72 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.ToDoFragment">
+    tools:context=".Fragments.ToDoFragment"
+    android:background="#211D44">
 
-    <TextView
-        android:id="@+id/twpending"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="PENDING"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="10dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewToDo"
+<!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_view"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/twpending"
-        app:layout_constraintBottom_toTopOf="@id/twdone"
-        android:padding="8dp"
-        android:scrollbars="vertical"
-        />
+        android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">-->
 
-    <TextView
-        android:id="@+id/twdone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DONE"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp"/>
+            <TextView
+                android:id="@+id/tw1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_margin="6dp"
+                android:textColor="@color/white"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewToDoDone"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/twdone"
-        android:padding="8dp"
-        android:scrollbars="vertical"
-        />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewToDo"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tw1"
+                app:layout_constraintBottom_toTopOf="@id/tw2"
+                android:padding="8dp"
+                android:scrollbars="vertical"
+                android:background="#211D44"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tw2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Done"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/recyclerViewToDoDone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="50dp"
+                android:textColor="@color/white"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewToDoDone"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:padding="8dp"
+                android:scrollbars="vertical"
+                android:layout_marginTop="20dp"
+                android:background="#211D44"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>-->

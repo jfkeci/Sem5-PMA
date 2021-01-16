@@ -51,17 +51,18 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
     }
 
     private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private TextView textContent, textDate, textTime;
-        private CheckBox eventCheckbox;
-        private ImageView typeIcon;
+        private TextView textContent, textDate;
+        private ImageView typeIcon, ivLeft, ivRight;
 
         public ListViewHolder(View itemView){
 
             super (itemView);
             textContent = (TextView)itemView.findViewById(R.id.textContentSingleEvent);
             textDate = (TextView)itemView.findViewById(R.id.textDateSingleEvent);
-            eventCheckbox = (CheckBox) itemView.findViewById(R.id.checkBoxSingleEvent);
             typeIcon = (ImageView) itemView.findViewById(R.id.imageViewSingleEvent);
+            ivLeft = (ImageView) itemView.findViewById(R.id.swLeft);
+            ivRight = (ImageView) itemView.findViewById(R.id.swRight);
+
             itemView.setOnClickListener(this);
 
         }
@@ -69,7 +70,24 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
         public void bindView(int position){
 
             if(eventsList.size()>=1){
-                textContent.setText(eventsList.get(position).getEVENT_CONTENT());
+                String content = eventsList.get(position).getEVENT_CONTENT();
+                String mainContent = "";
+
+                if(content.length() > 35){
+                    int n=35;
+                    for(int i=0;i<content.length();i++){
+                        mainContent = mainContent + content.charAt(i);
+                        if(i==n){
+                            mainContent = mainContent + " \n ";
+                            n+=35;
+                        }
+                    }
+                }if(content.length() < 35){
+                    mainContent = content;
+                }
+
+
+                textContent.setText(mainContent);
                 textDate.setText(eventsList.get(position).getEVENT_DATE_TIME());
 
                 if((eventsList.get(position).getEVENT_TYPE()).equals("Event")){
@@ -79,9 +97,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
                     typeIcon.setImageResource(R.drawable.ic_baseline_notifications_24);
                 }
                 if((eventsList.get(position).getEVENT_TYPE()).equals("ToDo")){
-                    typeIcon.setVisibility(View.INVISIBLE);
-                    eventCheckbox.setVisibility(View.VISIBLE);
+                    typeIcon.setImageResource(R.drawable.ic_baseline_check_24);
                 }
+            }
+
+            if(listType == 1){
+                ivLeft.setVisibility(View.INVISIBLE);
+                ivRight.setVisibility(View.INVISIBLE);
             }
         }
         public void onClick(View view){

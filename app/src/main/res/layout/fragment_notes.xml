@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.NotesFragment"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="#211D44">
 
     <TextView
         android:id="@+id/banner"
@@ -19,7 +20,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="50dp"
+        android:textColor="@color/white"/>
     <TextView
         android:id="@+id/bannerSlogan"
         android:layout_width="match_parent"
@@ -31,7 +33,8 @@
         android:fontFamily="sans-serif-black"
         app:layout_constraintTop_toBottomOf="@id/banner"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/white"/>
     <EditText
         android:id="@+id/etNoteTitle"
         android:layout_width="match_parent"
@@ -46,21 +49,23 @@
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bannerSlogan"/>
+        app:layout_constraintTop_toBottomOf="@id/bannerSlogan"
+        android:textColor="@color/white"/>
     <EditText
         android:id="@+id/etNoteContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:ems="10"
         android:hint="Content"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         android:textSize="15sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etNoteTitle"/>
+        app:layout_constraintTop_toBottomOf="@id/etNoteTitle"
+        android:textColor="@color/white"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewNotes"
@@ -70,7 +75,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etNoteContent"
         android:layout_margin="5dp"
-        android:padding="5dp" />
+        android:padding="5dp"
+        android:scrollbars="horizontal"/>
     <ImageButton
         android:id="@+id/addNoteButton"
         android:layout_width="60dp"
@@ -79,7 +85,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_margin="15dp"
         android:background="@drawable/ic_baseline_add_circle_22"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        android:backgroundTint="@color/MyTealGreenColor"/>
     <ImageButton
         android:id="@+id/updateNoteButton"
         android:layout_width="60dp"
@@ -88,7 +95,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_margin="15dp"
         android:background="@drawable/ic_baseline_send_24"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:backgroundTint="@color/MyTealGreenColor"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

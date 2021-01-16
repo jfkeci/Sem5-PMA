@@ -3,11 +3,15 @@ package com.example.focusapp.Fragments;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.database.Cursor;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,15 +36,20 @@ import com.example.focusapp.Models.User;
 import com.example.focusapp.R;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.android.material.snackbar.Snackbar;
 
 
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class CalendarFragment extends Fragment  implements AdapterView.OnItemSelectedListener{
 
@@ -48,11 +57,23 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     public String dateSelected="";
     int nHour, nMinute;
 
-    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
-    SimpleDateFormat currentMonthFormat = new SimpleDateFormat("MMMM yyyy");
+    int alarmYear, alarmMonth, alarmDay, alarmHour, alarmMinute;
 
+    int countFirst=0;
 
-    private Events event = new Events();
+    private Events checkedEvent = new Events();
+    public Events deletedEvent = new Events();
+    public boolean deleteyn=true;
+    public boolean checkyn=true;
+
+    public SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
+    public SimpleDateFormat currentMonthFormat = new SimpleDateFormat("MMMM yyyy");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+    public SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+    public SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+    public SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+    public SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
+    public SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
 
     private ImageButton buttonSetTime, buttonNext, buttonPrev, buttonSaveEvent;
     private TextView textViewTime, textViewDate;
@@ -61,12 +82,14 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
     private RecyclerView recyclerView;
 
-    MyDbHelper dbHelper;
+    public MyDbHelper dbHelper;
+
+    public MyRecyclerAdapter todoAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -93,27 +116,126 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
         dbHelper = new MyDbHelper(getActivity().getBaseContext());
 
-        Event ev1 = new Event(Color.GREEN, 1608117037000L, "Some extra data that I want to store.");
-        calendarView.addEvent(ev1);
-
         String currentDateandTime = currentMonthFormat.format(new Date());
         textViewDate.setText(currentDateandTime);
 
         InitEventTypeSpinner(v);
-        InitCalendarButtons();
         InitCalendar();
         InitButtonSetTime();
         InitButtonSaveEvent();
 
-        eventsList = allEventsList();
-
-        if(eventsList.size()>=1){
-            InitRecycleView(eventsList, 1);
-        }
-
+        InitRecycleViewFunct(allEventsByDateList(dateSelected, false));
 
         return v;
     }
+
+    public void InitRecycleViewFunct(ArrayList<Events> arrayListEvents){
+
+        todoAdapter = new MyRecyclerAdapter(getActivity(), arrayListEvents, 0);
+        recyclerView.setAdapter(todoAdapter);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+
+                if(direction == ItemTouchHelper.LEFT){
+                    deletedEvent=null;
+                    deletedEvent = arrayListEvents.get(position);
+                    final int deletingActionPosition = arrayListEvents.indexOf(deletedEvent);
+                    arrayListEvents.remove(deletedEvent);
+                    todoAdapter.notifyItemRemoved(position);
+
+                    Snackbar.make(recyclerView, deletedEvent.getEVENT_CONTENT(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            arrayListEvents.add(position, deletedEvent);
+                            todoAdapter.notifyItemInserted(position);
+                            deleteyn=false;
+                        }
+                    }).show();
+
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    if(deleteyn){
+                                        dbHelper.deleteEvent(String.valueOf(deletedEvent.getEVENT_ID()));
+                                        deletedEvent = null;
+                                        deleteyn = true;
+                                        InitCalendar();
+                                        InitRecycleViewFunct(allEventsByDateList(dateSelected, false));
+                                    }else{
+                                        deletedEvent=null;
+                                        deleteyn = true;
+                                    }
+                                }
+                            },4000
+                    );
+                }
+                if(direction == ItemTouchHelper.RIGHT){
+                    checkedEvent=null;
+                    checkedEvent = arrayListEvents.get(position);
+                    final int checkingActionPosition = arrayListEvents.indexOf(checkedEvent);
+                    arrayListEvents.remove(checkedEvent);
+                    todoAdapter.notifyItemRemoved(position);
+
+                    Snackbar.make(recyclerView, checkedEvent.getEVENT_CONTENT(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            arrayListEvents.add(position, checkedEvent);
+                            todoAdapter.notifyItemInserted(position);
+                            checkyn=false;
+                        }
+                    }).show();
+
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    if(checkyn){
+                                        dbHelper.eventSetChecked(String.valueOf(checkedEvent.getEVENT_ID()));
+                                        checkedEvent = null;
+                                        checkyn = true;
+                                        InitCalendar();
+
+                                    }else{
+                                        checkedEvent = null;
+                                        checkyn = true;
+                                    }
+                                }
+                            },
+                            4000
+                    );
+                }
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(getActivity(), R.color.MyPinkColor))
+                        .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_sweep_24)
+                        .addSwipeRightBackgroundColor(ContextCompat.getColor(getActivity(), R.color.MyGoodGreenColor))
+                        .addSwipeRightActionIcon(R.drawable.ic_baseline_check_24)
+                        .create()
+                        .decorate();
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+
+
 
     //spinner
     private void InitEventTypeSpinner(View v) {
@@ -134,6 +256,34 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     }
 
     private void InitCalendar() {
+
+        ArrayList<Events> arrayListAllEvents = new ArrayList<>();
+        arrayListAllEvents.clear();
+        arrayListAllEvents = allEventsList(false);
+
+        calendarView.removeAllEvents();
+
+        Date currentDate = Calendar.getInstance().getTime();
+        dateSelected = dateFormat.format(currentDate);
+
+        for (Events event : arrayListAllEvents) {
+            if(!event.isCHECKED()){
+                String eventDateTimeString = event.getEVENT_DATE_TIME();
+                if (!event.isCHECKED()) {
+                    try {
+                        Date eventDate = sdf.parse(eventDateTimeString);
+                        long eventEpoch = dateToEpoch(eventDate);
+
+                        Event ev1 = new Event(Color.RED, eventEpoch * 1000, event.getEVENT_CONTENT());
+                        calendarView.addEvent(ev1);
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
         calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
 
             @Override
@@ -141,11 +291,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                 dateSelected = epochToDate(dateToEpoch(dateClicked));
 
-                String selectedDateAndTime = sdf.format(dateClicked);
-
-
-                InitRecycleView(allEventsByDateList(dateSelected),1);
-
+                InitRecycleViewFunct(allEventsByDateList(dateSelected, false));
             }
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
@@ -153,9 +299,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                 textViewDate.setText(currentMonth);
             }
         });
-    }
 
-    private void InitCalendarButtons() {
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,7 +312,9 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                 calendarView.scrollLeft();
             }
         });
+
     }
+
     private void InitButtonSetTime() {
         buttonSetTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,13 +356,10 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                 String eventContent = editTextEvent.getText().toString();
                 String datetime = makeDateAndTime(dateSelected, textViewTime.getText().toString());
 
-                if(dateSelected.equals("")){
-                    makeMyToast("Not ready yet", "Set a date for your "+eventTypeSelected, 0);
-                }
                 if(eventContent.length()<1){
                     makeMyToast("Not ready yet", "Please write a description for your "+eventTypeSelected, 0);
                 }
-                if(!dateSelected.equals("") && dateSelected != null && eventContent.length()>1){
+                if(eventContent.length()>1){
 
                     User currentUser = dbHelper.getUser();
 
@@ -224,34 +367,22 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                     if(isInserted){
                         Toast.makeText(getActivity(), "Event added!", Toast.LENGTH_LONG).show();
+
+                        InitRecycleViewFunct(allEventsByDateList(dateSelected, false));
+
+                        InitCalendar();
+
+                        textViewTime.setText("00:00");
+                        editTextEvent.setText("Add new event");
                     }else{
-                        Toast.makeText(getActivity(), "data NOT inserted! problem", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Event NOT inserted, problem", Toast.LENGTH_LONG).show();
                     }
-
-                    textViewTime.setText("00:00");
-                    editTextEvent.setText("Add new event");
-
-
-                    ArrayList<Events> list = allEventsByDateList(dateSelected);
-
-                    if(list.size()>=1){
-                        InitRecycleView(list,1);
-                    }
-
-
-
                 }
             }
         });
     }
-    public void InitRecycleView(ArrayList<Events> userEventsList, int adapter_case){
-        MyRecyclerAdapter todoAdapter = new MyRecyclerAdapter(getActivity(), userEventsList, 0);
-        recyclerView.setAdapter(todoAdapter);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-    }
 
-    public ArrayList<Events> allEventsList(){
+    public ArrayList<Events> allEventsByDateList(String dateSelected, boolean check){
         ArrayList<Events> myEvents = new ArrayList<>();
 
         myEvents.clear();
@@ -269,22 +400,27 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
             if(Integer.parseInt(res.getString(5)) == 0){
                 checked = false;
             }if(Integer.parseInt(res.getString(5)) == 1){
-                checked=true;
+                checked = true;
             }
 
-            int id = Integer.parseInt(res.getString(0));
+            if(!checked && !check){
+                int id = Integer.parseInt(res.getString(0));
 
-            Events event = new Events(id, res.getString(1),
-                    res.getString(2), res.getString(3),
-                    res.getString(4), checked );
+                if(res.getString(4).contains(dateSelected)){
+                    Events event = new Events(id, res.getString(1),
+                            res.getString(2), res.getString(3),
+                            res.getString(4), checked );
 
-            myEvents.add(event);
+                    myEvents.add(event);
+                }
+            }
+
         }
 
         return myEvents;
     }
 
-    public ArrayList<Events> allEventsByDateList(String dateSelected){
+    public ArrayList<Events> allEventsList(boolean check){
         ArrayList<Events> myEvents = new ArrayList<>();
 
         myEvents.clear();
@@ -302,18 +438,17 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
             if(Integer.parseInt(res.getString(5)) == 0){
                 checked = false;
             }if(Integer.parseInt(res.getString(5)) == 1){
-                checked=true;
+                checked = true;
             }
 
-            int id = Integer.parseInt(res.getString(0));
-
-            if(res.getString(4).contains(dateSelected)){
+            if(!checked && !check){
+                int id = Integer.parseInt(res.getString(0));
                 Events event = new Events(id, res.getString(1),
                         res.getString(2), res.getString(3),
                         res.getString(4), checked );
-
                 myEvents.add(event);
             }
+
         }
 
         return myEvents;
@@ -345,7 +480,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     //Filters and converters
     public String epochToDate(Long epoch){
         String sDate;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         sDate = dateFormat.format(new Date(epoch*1000));
 
@@ -354,14 +488,8 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     public long dateToEpoch(Date date){
         long epoch;
 
-        epoch = date.getTime();
-        epoch = epoch/1000;
+        epoch = date.getTime() / 1000;
 
         return epoch;
     }
-    /*public String epochToDateAndTime(Long epoch){
-
-    }*/
-
-
 }

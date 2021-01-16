@@ -1,5 +1,7 @@
 package com.example.focusapp.Fragments;
 
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,12 +10,17 @@ import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.focusapp.AppLockListActivity;
 import com.example.focusapp.R;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 
 
 public class TimerFragment extends Fragment {
@@ -26,10 +33,13 @@ public class TimerFragment extends Fragment {
     private long TimeLeftInMillis = START_TIME_IN_MILLIS;
 
     private TextView TextViewCountDown;
-    private Button ButtonStartPause, ButtonReset;
+    private Button ButtonStartPause, ButtonReset, ButtonDisableApps;
+    ImageView ivClock, ivArrow;
 
     private CountDownTimer countDownTimer;
     private boolean TimerRunning;
+
+    Animation a1, a2, a3, rounding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,24 +53,56 @@ public class TimerFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_timer, container, false);
 
+        Typeface MLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/MLight.ttf");
+        Typeface MMedium = Typeface.createFromAsset(getActivity().getAssets(), "fonts/MLight.ttf");
+        Typeface MRegular = Typeface.createFromAsset(getActivity().getAssets(), "fonts/MLight.ttf");
+
         TextViewCountDown = v.findViewById(R.id.textViewCountdown);
         ButtonStartPause = v.findViewById(R.id.buttonStartPause);
         ButtonReset = v.findViewById(R.id.buttonResetTimer);
+        ButtonDisableApps = (Button) v.findViewById(R.id.buttonDisableApps);
+        ivClock = v.findViewById(R.id.ivTimerCircle);
+        ivArrow = v.findViewById(R.id.ivTimerArrow);
+
+        a1 = AnimationUtils.loadAnimation(getActivity().getBaseContext(), R.anim.appear);
+        a2 = AnimationUtils.loadAnimation(getActivity().getBaseContext(), R.anim.slide_in_one);
+        a3 = AnimationUtils.loadAnimation(getActivity().getBaseContext(), R.anim.slide_in_two);
+        rounding = AnimationUtils.loadAnimation(getActivity().getBaseContext(), R.anim.rounding);
+
+        ivClock.startAnimation(a1);
+        ivArrow.startAnimation(a1);
+        TextViewCountDown.startAnimation(a2);
+        ButtonStartPause.startAnimation(a3);
+        ButtonReset.startAnimation(a3);
+        ButtonDisableApps.startAnimation(a3);
+
+        ButtonStartPause.setTypeface(MMedium);
+        TextViewCountDown.setTypeface(MRegular);
+
+        ButtonDisableApps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AppLockListActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         ButtonStartPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(TimerRunning){
-                    pauseTimer();
+
                 }else{
                     startTimer();
+                    ivArrow.startAnimation(rounding);
                 }
             }
         });
         ButtonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetTimer();
+                pauseTimer();
             }
         });
         updateCountDownText();
@@ -79,31 +121,27 @@ public class TimerFragment extends Fragment {
             public void onTick(long millisUntilFinished) {
                 TimeLeftInMillis = millisUntilFinished;
                 updateCountDownText();
+
             }
             @Override
             public void onFinish() {
                 TimerRunning=false;
-                ButtonStartPause.setText("start");
-                ButtonStartPause.setVisibility(View.INVISIBLE);
-                ButtonReset.setVisibility(View.VISIBLE);
+
             }
         }.start();
         TimerRunning = true;
-        ButtonStartPause.setText("pause");
-        ButtonReset.setVisibility(View.INVISIBLE);
+
     }
 
     private void pauseTimer(){
         countDownTimer.cancel();
         TimerRunning = false;
-        ButtonStartPause.setText("start");
-        ButtonReset.setVisibility(View.VISIBLE);
+
+        resetTimer();
     }
     private void resetTimer(){
         TimeLeftInMillis = START_TIME_IN_MILLIS;
         updateCountDownText();
-        ButtonReset.setVisibility(View.INVISIBLE);
-        ButtonStartPause.setVisibility(View.VISIBLE);
 
     }
     private void updateCountDownText(){

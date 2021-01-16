@@ -15,22 +15,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:cardCornerRadius="5dp"
         android:padding="5dp"
-        app:cardBackgroundColor="@android:color/darker_gray">
+        app:cardBackgroundColor="#48B9AC">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="3dp">
-
-                <CheckBox
-                    android:id="@+id/checkBoxSingleEvent"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="7dp"
-                    android:visibility="invisible"/>
 
                 <ImageView
                     android:id="@+id/imageViewSingleEvent"
@@ -38,21 +28,22 @@
                     android:layout_height="25dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="3dp"
                     android:layout_marginLeft="10dp"
-                    android:visibility="visible"/>
+                    android:visibility="visible"
+                    android:backgroundTint="@color/black"/>
 
                 <TextView
                     android:id="@+id/textContentSingleEvent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    app:layout_constraintTop_toTopOf="@id/checkBoxSingleEvent"
-                    app:layout_constraintLeft_toRightOf="@id/checkBoxSingleEvent"
+                    app:layout_constraintTop_toTopOf="@id/imageViewSingleEvent"
+                    app:layout_constraintLeft_toRightOf="@id/imageViewSingleEvent"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"/>
+                    android:textColor="@color/white"/>
 
                 <TextView
                     android:id="@+id/textDateSingleEvent"
@@ -62,7 +53,28 @@
                     android:text="TextView"
                     android:textSize="8sp"
                     app:layout_constraintLeft_toLeftOf="@id/textContentSingleEvent"
-                    app:layout_constraintTop_toBottomOf="@id/textContentSingleEvent" />
+                    app:layout_constraintTop_toBottomOf="@id/textContentSingleEvent"
+                    android:textColor="@color/white"/>
+                <ImageView
+                    android:id="@+id/swRight"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/ic_baseline_arrow_forward_white_24"
+                    android:visibility="visible"/>
+                <ImageView
+                    android:id="@+id/swLeft"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    app:layout_constraintRight_toLeftOf="@id/swRight"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/ic_baseline_arrow_back_white_24"
+                    android:visibility="visible"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

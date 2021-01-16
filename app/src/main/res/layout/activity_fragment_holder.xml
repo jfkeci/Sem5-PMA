@@ -17,14 +17,18 @@
         app:tabMode="fixed"
         app:tabPaddingTop="8dp"
         app:tabPaddingBottom="15dp"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        app:tabTextColor="@color/white"
+        app:tabIconTint="@color/white"
+        android:background="#211D44"
+        app:tabIndicatorColor="#48B9AC"/>
 
     <View
         android:id="@+id/tabline"
         android:layout_width="match_parent"
         android:layout_height="3dp"
         app:layout_constraintTop_toTopOf="@id/tabLayout"
-        android:background="@color/design_default_color_primary"
+        android:background="#48B9AC"
         android:visibility="visible"/>
 
     <androidx.viewpager2.widget.ViewPager2

@@ -13,6 +13,7 @@ import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.User;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -113,7 +114,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_EVENTS+" WHERE CHECKED='" + check + "'", null);
         return res;
     }
-    public boolean updateEventStateToChecked(String EVENT_ID){
+    public boolean eventSetChecked(String EVENT_ID){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL11, EVENT_ID);
@@ -221,4 +222,26 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public Integer deleteNote(String NOTE_ID){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        return db.delete(TABLE_NOTES, "NOTE_ID = ?", new String[]{NOTE_ID});
+    }
+
+    public void addNotesList(ArrayList<Notes> notesList){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM "+TABLE_NOTES);
+
+        for (Notes note: notesList) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COL31, note.getNOTE_ID());
+            contentValues.put(COL32, note.getUSER_ID());
+            contentValues.put(COL33, note.getNOTE_TITLE());
+            contentValues.put(COL34, note.getNOTE_CONTENT());
+            contentValues.put(COL35, note.getNOTE_DATE_TIME());
+
+            long result = db.insert(TABLE_NOTES, null, contentValues);
+        }
+    }
 }
