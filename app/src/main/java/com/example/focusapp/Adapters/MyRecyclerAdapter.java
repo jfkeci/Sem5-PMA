@@ -51,7 +51,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
     }
 
     private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private TextView textContent, textDate;
+        private TextView textContent, textDate, textPosition;
         private ImageView typeIcon, ivLeft, ivRight;
 
         public ListViewHolder(View itemView){
@@ -59,6 +59,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
             super (itemView);
             textContent = (TextView)itemView.findViewById(R.id.textContentSingleEvent);
             textDate = (TextView)itemView.findViewById(R.id.textDateSingleEvent);
+            textPosition = (TextView)itemView.findViewById(R.id.position);
             typeIcon = (ImageView) itemView.findViewById(R.id.imageViewSingleEvent);
             ivLeft = (ImageView) itemView.findViewById(R.id.swLeft);
             ivRight = (ImageView) itemView.findViewById(R.id.swRight);
@@ -89,6 +90,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
 
                 textContent.setText(mainContent);
                 textDate.setText(eventsList.get(position).getEVENT_DATE_TIME());
+
+                Events posEvent = eventsList.get(position);
+
+                textPosition.setText("rec: " + position + ", list pos" + eventsList.indexOf(posEvent));
 
                 if((eventsList.get(position).getEVENT_TYPE()).equals("Event")){
                     typeIcon.setImageResource(R.drawable.ic_baseline_calendar_today_24);

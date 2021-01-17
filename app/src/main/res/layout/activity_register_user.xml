@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterUserActivity">
+    tools:context=".RegisterUserActivity"
+    android:background="@color/MyDarkBlueColor">
 
     <TextView
         android:id="@+id/banner"
@@ -18,7 +19,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="50dp"
+        android:textColor="@color/white"/>
     <TextView
         android:id="@+id/bannerSlogan"
         android:layout_width="match_parent"
@@ -30,7 +32,8 @@
         android:fontFamily="sans-serif-black"
         app:layout_constraintTop_toBottomOf="@id/banner"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/white"/>
     <EditText
         android:id="@+id/inputEmail"
         android:layout_width="match_parent"
@@ -86,7 +89,9 @@
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inputPassword"/>
+        app:layout_constraintTop_toBottomOf="@id/inputPassword"
+        android:background="@drawable/button_green_bg"
+        android:textColor="@color/white"/>
 
 
     <ProgressBar

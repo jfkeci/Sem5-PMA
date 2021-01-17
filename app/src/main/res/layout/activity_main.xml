@@ -57,11 +57,11 @@
         android:id="@+id/startButton"
         android:layout_width="280dp"
         android:layout_height="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/backupDataButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="Lets go!"
@@ -69,6 +69,35 @@
         android:textSize="20sp"
         android:textAllCaps="false"
         android:background="@drawable/button_green_bg"/>
+
+    <Button
+        android:id="@+id/backupDataButton"
+        android:layout_width="280dp"
+        android:layout_height="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Backup Data?"
+        android:textColor="#FFF"
+        android:textSize="20sp"
+        android:textAllCaps="false"
+        android:background="@drawable/button_green_bg"
+        android:visibility="invisible"/>
+    <ProgressBar
+        android:id="@+id/progressBarBackup"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/startButton"
+        app:layout_constraintTop_toBottomOf="@id/twSubBanner"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

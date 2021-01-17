@@ -108,10 +108,42 @@ public class MyDbHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    public boolean addNewEventWithId(Events event){
+        int check = 1;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        if(event.isCHECKED()){
+            check = 1;
+        }else{
+            check = 0;
+        }
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL11, event.getEVENT_ID());
+        contentValues.put(COL12, event.getUSER_ID());
+        contentValues.put(COL13, event.getEVENT_TYPE());
+        contentValues.put(COL14, event.getEVENT_CONTENT());
+        contentValues.put(COL15, event.getEVENT_DATE_TIME());
+        contentValues.put(COL16, check);
+
+        long result = db.insert(TABLE_EVENTS, null, contentValues);
+
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
     public Cursor getAllEventsByCheck(int check){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_EVENTS+" WHERE CHECKED='" + check + "'", null);
+        return res;
+    }
+    public Cursor getAllEvents(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_EVENTS, null);
         return res;
     }
     public boolean eventSetChecked(String EVENT_ID){
@@ -123,11 +155,11 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         return true;
     }
-    public boolean updateEventContent(String EVENT_ID, String EVENT_CONTENT){
+    public boolean eventUncheck(String EVENT_ID){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL11, EVENT_ID);
-        contentValues.put(COL14, EVENT_CONTENT);
+        contentValues.put(COL16, 0);
         db.update(TABLE_EVENTS, contentValues, "EVENT_ID = ?", new String[]{EVENT_ID});
 
         return true;
@@ -201,6 +233,25 @@ public class MyDbHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    public boolean addNewNoteWithId(int nid, String uid, String note_title, String note_content, String note_DateTime){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL31, nid);
+        contentValues.put(COL32, uid);
+        contentValues.put(COL33, note_title);
+        contentValues.put(COL34, note_content);
+        contentValues.put(COL35, note_DateTime);
+
+        long result = db.insert(TABLE_NOTES, null, contentValues);
+
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
     public Cursor getAllNotes(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -209,11 +260,11 @@ public class MyDbHelper extends SQLiteOpenHelper {
     }
 
     public boolean updateNote(Notes note){
+
         String nid = String.valueOf(note.getNOTE_ID());
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL32, note.getUSER_ID());
         contentValues.put(COL33, note.getNOTE_TITLE());
         contentValues.put(COL34, note.getNOTE_CONTENT());
         contentValues.put(COL35, note.getNOTE_DATE_TIME());
@@ -243,5 +294,11 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
             long result = db.insert(TABLE_NOTES, null, contentValues);
         }
+    }
+
+    public Cursor getAllSessions(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SESSIONS, null);
+        return res;
     }
 }

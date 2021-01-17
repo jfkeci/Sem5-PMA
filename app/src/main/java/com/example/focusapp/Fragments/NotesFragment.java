@@ -48,6 +48,9 @@ public class NotesFragment extends Fragment {
     public Notes updatingNote = new Notes();
     public Notes deletedNote = new Notes();
 
+
+    public  ArrayList<Notes> myNotes = new ArrayList<>();
+
     public boolean deleteyn=true;
     public boolean updateyn=true;
 
@@ -116,16 +119,14 @@ public class NotesFragment extends Fragment {
                 }else{
                     boolean isInserted = dbHelper.addNewNote(uid, title, content, noteDateTime);
                     if(isInserted){
-                        Toast.makeText(getActivity(), "Note added!", Toast.LENGTH_LONG).show();
+                        makeMyToast("Note added");
                         etNoteTitle.setText("");
                         etNoteContent.setText("");
                         InitRecycleView();
                     }else{
-                        Toast.makeText(getActivity(), "data NOT inserted! problem", Toast.LENGTH_LONG).show();
+                        makeMyToast("Try again!");
                     }
                 }
-
-
             }
         });
     }
@@ -133,6 +134,7 @@ public class NotesFragment extends Fragment {
         buttonUpdateNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Date date = Calendar.getInstance().getTime();
                 String noteDateTime = sdf.format(date);
 
@@ -140,31 +142,40 @@ public class NotesFragment extends Fragment {
                 updatingNote.setNOTE_CONTENT(etNoteContent.getText().toString());
                 updatingNote.setNOTE_DATE_TIME(noteDateTime);
 
-                dbHelper.updateNote(updatingNote);
+                boolean isUpdated = dbHelper.updateNote(updatingNote);
 
-                etNoteContent.setText("");
-                etNoteTitle.setText("");
+                if(isUpdated){
+                    etNoteContent.setText("");
+                    etNoteTitle.setText("");
 
-                InitRecycleView();
+                    buttonUpdateNote.setVisibility(View.INVISIBLE);
+                    buttonAddNote.setVisibility(View.VISIBLE);
 
-                buttonUpdateNote.setVisibility(View.INVISIBLE);
-                buttonAddNote.setVisibility(View.VISIBLE);
+                    InitRecycleView();
+                }else{
+                    makeMyToast("Try again!");
+                }
             }
         });
     }
 
     public void InitRecycleView(){
-        ArrayList<Notes> myNotes = new ArrayList<>();
 
         myNotes.clear();
 
-        myNotes = allNotesList();
+        myNotes=allNotesList();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext(), LinearLayoutManager.HORIZONTAL, false);
         notesAdapter = new NotesRecyclerAdapter(getActivity().getBaseContext(), myNotes);
         recyclerView.setAdapter(notesAdapter);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 //        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        notesAdapter.notifyDataSetChanged();
+
+        if(myNotes.isEmpty()){
+            makeMyToast("No notes");
+        }
 
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP | ItemTouchHelper.DOWN) {
             @Override
@@ -173,51 +184,59 @@ public class NotesFragment extends Fragment {
             }
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getLayoutPosition();
-
-                ArrayList<Notes> recycleNotesList = allNotesList();
+                final int position = viewHolder.getLayoutPosition();
 
                 if (direction == ItemTouchHelper.DOWN) {
-                    deletedNote = recycleNotesList.get(position);
-                    recycleNotesList.remove(position);
-                    notesAdapter.notifyItemRemoved(position);
+                    deletedNote = myNotes.get(position);
 
+                    String note_id = String.valueOf(deletedNote.getNOTE_ID());
+
+                    int deleted = dbHelper.deleteNote(note_id);
+
+                    if(deleted == 1){
+                        myNotes.remove(position);
+                        notesAdapter.notifyItemRemoved(position);
+                    }
                     Snackbar.make(recyclerView, deletedNote.getNOTE_TITLE(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            recycleNotesList.add(position, deletedNote);
-                            notesAdapter.notifyItemInserted(position);
-                            deleteyn = false;
+                            boolean undone = dbHelper.addNewNoteWithId(deletedNote.getNOTE_ID(), deletedNote.getUSER_ID(), deletedNote.getNOTE_TITLE(), deletedNote.getNOTE_CONTENT(), deletedNote.getNOTE_DATE_TIME());
+                            if(undone){
+                                myNotes.add(position, deletedNote);
+                                notesAdapter.notifyItemInserted(position);
+                            }else{
+                                makeMyToast("Something went wrong!");
+                            }
                         }
                     }).show();
-
-                    new java.util.Timer().schedule(
-                            new java.util.TimerTask() {
-                                @Override
-                                public void run() {
-                                    if(deleteyn){
-                                        dbHelper.deleteNote(String.valueOf(deletedNote.getNOTE_ID()));
-                                        makeMyLog("note is deleted ", " -->this one: "+deletedNote.getNOTE_ID());
-                                        deletedNote = null;
-                                        deleteyn = true;
-                                    }else{
-                                        makeMyLog("note is NOT deleted ", " -->this one: "+deletedNote.getNOTE_ID());
-                                        deletedNote=null;
-                                        deleteyn = true;
-                                    }
-                                }
-                            }, 4000
-                    );
                 }
                 if (direction == ItemTouchHelper.UP) {
-                    recycleNotesList.remove(position);
+
+                    makeMyToast("Edit your note");
+
+                    updatingNote = myNotes.get(position);
+
+                    myNotes.remove(position);
                     notesAdapter.notifyItemRemoved(position);
 
                     buttonAddNote.setVisibility(View.INVISIBLE);
                     buttonUpdateNote.setVisibility(View.VISIBLE);
 
-                    etNoteTitle.setText(recycleNotesList.get(position).getNOTE_TITLE());
-                    etNoteContent.setText(recycleNotesList.get(position).getNOTE_CONTENT());
+                    etNoteTitle.setText(updatingNote.getNOTE_TITLE());
+                    etNoteContent.setText(updatingNote.getNOTE_CONTENT());
+
+                    Snackbar.make(recyclerView, updatingNote.getNOTE_TITLE(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            //dbHelper.addNewNoteWithId(updatingNote.getNOTE_ID(), updatingNote.getUSER_ID(), updatingNote.getNOTE_TITLE(), updatingNote.getNOTE_CONTENT(), updatingNote.getNOTE_DATE_TIME());
+                            myNotes.add(position, updatingNote);
+                            notesAdapter.notifyItemInserted(position);
+                            etNoteTitle.setText("");
+                            etNoteContent.setText("");
+
+                        }
+                    }).show();
                 }
             }
         };
@@ -228,14 +247,14 @@ public class NotesFragment extends Fragment {
 
 
     public ArrayList<Notes> allNotesList(){
-        ArrayList<Notes> myNotes = new ArrayList<>();
+        ArrayList<Notes> dbNotes = new ArrayList<>();
 
-        myNotes.clear();
+        dbNotes.clear();
 
         Cursor res = dbHelper.getAllNotes();
 
         if(res.getCount() == 0){
-            makeMyToast("Error", "No notes found", 0);
+            makeMyToast("Error, No notes found");
         }
         StringBuffer buffer = new StringBuffer();
         while(res.moveToNext()){
@@ -245,23 +264,16 @@ public class NotesFragment extends Fragment {
                     res.getString(2), res.getString(3),
                     res.getString(4));
 
-            myNotes.add(0, note);
+            dbNotes.add(0, note);
         }
 
-        return myNotes;
+        return dbNotes;
     }
 
-    private void makeMyToast(String thing, String message, int yn){
-        if(yn == 1){
-            Toast.makeText(getActivity().getBaseContext(), thing + " - Has been done, Message: "+message, Toast.LENGTH_SHORT).show();
-        }if(yn == 0){
-            Toast.makeText(getActivity().getBaseContext(), thing + " - Has failed, Message: "+message, Toast.LENGTH_SHORT).show();
-        }
+    private void makeMyToast(String message){
+        Toast.makeText(getActivity().getBaseContext(), "Message:  "+message, Toast.LENGTH_SHORT).show();
     }
     public void makeMyLog(String message, String thing){
         Log.d("Logged item", ""+message+" :"+thing);
     }
-
-
-
 }

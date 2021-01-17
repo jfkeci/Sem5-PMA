@@ -1,6 +1,7 @@
 package com.example.focusapp.Fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.os.Bundle;
@@ -44,8 +45,7 @@ public class ToDoFragment extends Fragment {
 
 
     public Events deletedEvent = new Events();
-    public boolean deleteyn=true;
-    public boolean updateyn=true;
+    public Events checkedEvent = new Events();
 
 
     @Override
@@ -58,44 +58,49 @@ public class ToDoFragment extends Fragment {
 
         recyclerViewChecked = v.findViewById(R.id.recyclerViewToDoDone);
 
-//        swipeRefreshLayout = v.findViewById(R.id.swipe_refresh_view);
-
         dbHelper = new MyDbHelper(getActivity().getBaseContext());
 
-        eventsList = allEventsList(0);
-        eventsCheckedList = allEventsList(1);
-
-        if(eventsList.size()>=1){
-            InitRecycleViewFunct(allEventsList(0));
-        }
-        if(eventsCheckedList.size()>0){
-            InitRecycleViewChecked(eventsCheckedList);
-        }
-
-
+        RefreshToDoHere();
 
         return v;
     }
 
-    public void InitRecycleView(ArrayList<Events> userEventsList){
-        todoAdapter = new MyRecyclerAdapter(getActivity(), userEventsList, 0);
-        recyclerView.setAdapter(todoAdapter);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+
+    public void RefreshToDoHere(){
+        InitRecycleViewFunct();
+        InitRecycleViewChecked();
     }
-    public void InitRecycleViewChecked(ArrayList<Events> userEventsList){
-        checkedAdapter = new MyRecyclerAdapter(getActivity(), userEventsList, 1);
+
+    public void InitRecycleViewChecked(){
+
+        eventsCheckedList.clear();
+
+        eventsCheckedList = allEventsList(1);
+
+        checkedAdapter = new MyRecyclerAdapter(getActivity(), eventsCheckedList, 1);
         recyclerViewChecked.setAdapter(checkedAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewChecked.setLayoutManager(layoutManager);
+
+        checkedAdapter.notifyDataSetChanged();
     }
 
-    public void InitRecycleViewFunct(ArrayList<Events> arrayListEvents){
+    public void InitRecycleViewFunct(){
 
-        todoAdapter = new MyRecyclerAdapter(getActivity(), arrayListEvents, 0);
+        eventsList.clear();
+
+        eventsList = allEventsList(0);
+
+        todoAdapter = new MyRecyclerAdapter(getActivity(), eventsList, 0);
         recyclerView.setAdapter(todoAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+
+        todoAdapter.notifyDataSetChanged();
+
+        if(eventsList.isEmpty()){
+            makeMyToast("Nothing to do");
+        }
 
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -108,67 +113,62 @@ public class ToDoFragment extends Fragment {
                 int position = viewHolder.getAdapterPosition();
 
                 if(direction == ItemTouchHelper.LEFT){
-                    deletedEvent = arrayListEvents.get(position);
-                    arrayListEvents.remove(position);
-                    todoAdapter.notifyItemRemoved(position);
+                    deletedEvent = eventsList.get(position);
+
+                    String event_id = String.valueOf(deletedEvent.getEVENT_ID());
+
+                    int deleted = dbHelper.deleteEvent(event_id);
+
+                    if(deleted == 1){
+                        eventsList.remove(deletedEvent);
+                        todoAdapter.notifyItemRemoved(position);
+                    }
 
                     Snackbar.make(recyclerView, deletedEvent.getEVENT_CONTENT(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            arrayListEvents.add(position, deletedEvent);
-                            todoAdapter.notifyItemInserted(position);
-                            deleteyn=false;
+
+                            boolean undone = dbHelper.addNewEventWithId(deletedEvent);
+
+                            if(undone){
+                                eventsList.add(position, deletedEvent);
+                                todoAdapter.notifyItemInserted(position);
+                            }else{
+                                makeMyToast("Something went wrong!");
+                            }
                         }
                     }).show();
-
-                    new java.util.Timer().schedule(
-                            new java.util.TimerTask() {
-                                @Override
-                                public void run() {
-                                    if(deleteyn){
-                                        dbHelper.deleteEvent(String.valueOf(deletedEvent.getEVENT_ID()));
-                                        makeMyLog("event is deleted ", " -->this one: "+deletedEvent.getEVENT_ID());
-                                        deletedEvent = null;
-                                        deleteyn = true;
-                                    }else{
-                                        makeMyLog("event is NOT deleted ", " -->this one: "+deletedEvent.getEVENT_ID());
-                                        deletedEvent=null;
-                                        deleteyn = true;
-                                    }
-                                }
-                            },
-                            4000
-                    );
 
                 }
                 if(direction == ItemTouchHelper.RIGHT){
-                    deletedEvent = arrayListEvents.get(position);
-                    arrayListEvents.remove(position);
+                    checkedEvent = eventsList.get(position);
+
+
+                    eventsList.remove(checkedEvent);
                     todoAdapter.notifyItemRemoved(position);
 
-                    Snackbar.make(recyclerView, deletedEvent.getEVENT_CONTENT(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    boolean checked = dbHelper.eventSetChecked(String.valueOf(checkedEvent.getEVENT_ID()));
+
+                    if(checked){
+                        makeMyToast("Awesome!");
+                        InitRecycleViewChecked();
+                    }else{
+                        makeMyToast("Failed");
+                    }
+                    Snackbar.make(recyclerView, checkedEvent.getEVENT_CONTENT(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            arrayListEvents.add(position, deletedEvent);
-                            todoAdapter.notifyItemInserted(position);
-                            updateyn=false;
+                            boolean checked = dbHelper.eventUncheck(String.valueOf(checkedEvent.getEVENT_ID()));
+                            if(checked){
+                                makeMyToast("Unchecked");
+                                eventsList.add(position, checkedEvent);
+                                todoAdapter.notifyItemInserted(position);
+                                InitRecycleViewChecked();
+                            }else{
+                                makeMyToast("Failed");
+                            }
                         }
                     }).show();
-
-                    new java.util.Timer().schedule(
-                            new java.util.TimerTask() {
-                                @Override
-                                public void run() {
-                                    if(deleteyn){
-                                        makeMyLog("event has been   ", "updated yesyesyes");
-                                        updateyn = true;
-                                    }else{
-                                        updateyn = true;
-                                    }
-                                }
-                            },
-                            4000
-                    );
                 }
             }
 
@@ -228,12 +228,8 @@ public class ToDoFragment extends Fragment {
         return myEvents;
     }
 
-    private void makeMyToast(String thing, String message, int yn){
-        if(yn == 1){
-            Toast.makeText(getActivity().getBaseContext(), thing + " - Has been done, Message: "+message, Toast.LENGTH_SHORT).show();
-        }if(yn == 0){
-            Toast.makeText(getActivity().getBaseContext(), thing + " - Has failed, Message: "+message, Toast.LENGTH_SHORT).show();
-        }
+    private void makeMyToast(String message){
+        Toast.makeText(getActivity().getBaseContext(), "Message:  "+message, Toast.LENGTH_LONG).show();
     }
     public void makeMyMessage(String title, String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
