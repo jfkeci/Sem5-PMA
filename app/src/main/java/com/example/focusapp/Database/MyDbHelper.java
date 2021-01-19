@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.example.focusapp.Models.AppModel;
 import com.example.focusapp.Models.Events;
 import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.User;
@@ -44,6 +45,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public static final String COL34 = "NOTE_CONTENT";
     public static final String COL35 = "NOTE_DATE_TIME";
 
+
     //table session
     public static final String TABLE_SESSIONS = "SESSIONS_TABLE";
     public static final String COL41 = "SESSION_ID";
@@ -52,6 +54,13 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public static final String COL44 = "SESSION_DATE_TIME";
     public static final String COL45 = "SESSION_POINTS";
     public static final String COL46 = "SESSION_FINISHED";
+
+    //table apps to block
+    public static final String TABLE_APPS = "APPS_TABLE";
+    public static final String COL51 = "APP_NAME";
+    public static final String COL52 = "APP_STATUS";
+    public static final String COL53 = "PACKAGE_NAME";
+
 
     public MyDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -78,6 +87,8 @@ public class MyDbHelper extends SQLiteOpenHelper {
                 "(SESSION_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "USER_ID TEXT, SESSION_LENGTH TEXT, SESSION_DATE_TIME TEXT, " +
                 "SESSION_POINTS TEXT, SESSION_FINISHED INTEGER DEFAULT 0)");
+
+        db.execSQL("create table " + TABLE_APPS + "(APP_NAME TEXT, " + "APP_STATUS INTEGER, " + "PACKAGE_NAME TEXT)");
     }
 
     @Override
@@ -86,6 +97,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SESSIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_APPS);
         onCreate(db);
     }
 
@@ -108,6 +120,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+
     public boolean addNewEventWithId(Events event){
         int check = 1;
 
@@ -216,7 +229,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
     }
 
     public boolean addNewNote(String uid, String note_title, String note_content, String note_DateTime){
-
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -234,7 +246,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }
     }
     public boolean addNewNoteWithId(int nid, String uid, String note_title, String note_content, String note_DateTime){
-
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -260,7 +271,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
     }
 
     public boolean updateNote(Notes note){
-
         String nid = String.valueOf(note.getNOTE_ID());
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -280,7 +290,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
     }
 
     public void addNotesList(ArrayList<Notes> notesList){
-
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM "+TABLE_NOTES);
 
@@ -300,5 +309,34 @@ public class MyDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SESSIONS, null);
         return res;
+    }
+
+    public Cursor getAllApps(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_APPS, null);
+        return res;
+    }
+
+    public boolean addNewApp(AppModel app){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL51, app.getAppname());
+        contentValues.put(COL52, app.getStatus());
+        contentValues.put(COL53, app.getPackagename());
+
+        long result = db.insert(TABLE_APPS, null, contentValues);
+
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    public Integer deleteApp(String app_name){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        return db.delete(TABLE_APPS, "APP_NAME = ?", new String[]{app_name});
     }
 }

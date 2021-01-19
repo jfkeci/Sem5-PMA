@@ -4,13 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AppLockListActivity">
+    tools:context=".AppLockListActivity"
+    android:background="@color/MyDarkBlueColor">
+    
+
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleView"
+        android:id="@+id/recycleViewApps"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="350dp"
+        android:background="@color/MyDarkBlueColor"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="10dp">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <EditText
+        android:id="@+id/etAppSearch"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_margin="10dp"
+        android:drawableStart="@drawable/ic_baseline_search_24"
+        android:drawablePadding="10dp"
+        android:background="@drawable/custom_edit_text" />
+
+    <Button
+        android:id="@+id/saveBlockedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/etAppSearch"
+        app:layout_constraintLeft_toRightOf="@id/etAppSearch"
+        android:background="@drawable/button_green_bg"
+        android:layout_margin="3dp"
+        android:text="save"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

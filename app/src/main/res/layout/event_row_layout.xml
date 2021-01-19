@@ -55,17 +55,6 @@
                     app:layout_constraintLeft_toLeftOf="@id/textContentSingleEvent"
                     app:layout_constraintTop_toBottomOf="@id/textContentSingleEvent"
                     android:textColor="@color/white"/>
-            <TextView
-                android:id="@+id/position"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="TextView"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toRightOf="@id/textDateSingleEvent"
-                app:layout_constraintTop_toBottomOf="@id/textContentSingleEvent"
-                android:textColor="@color/white"/>
                 <ImageView
                     android:id="@+id/swRight"
                     android:layout_width="15dp"
