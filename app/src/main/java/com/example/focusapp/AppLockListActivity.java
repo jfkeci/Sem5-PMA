@@ -33,7 +33,6 @@ public class AppLockListActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     List<AppModel> appModelList = new ArrayList<>();
-    public List<AppModel> blockedAppsList = new ArrayList<>();
 
     EditText etSearchApps;
     Button buttonSave;
@@ -59,12 +58,11 @@ public class AppLockListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        blockedAppsList = allBlockedAppsList();
 
         adapter.setOnItemClickListener(new AppsRecyclerAdapter.OnAppClickedListener() {
             @Override
             public void onAppClick(int position) {
-                changeAppStatus(position);
+                adapter.notifyDataSetChanged();
             }
         });
 
@@ -107,28 +105,12 @@ public class AppLockListActivity extends AppCompatActivity {
         progressDialog.show();
     }
 
-    public void changeAppStatus(int position){
-        AppModel clickedApp = appModelList.get(position);
-        int status = clickedApp.getStatus();
-
-        if(status == 1){
-            appModelList.get(position).setStatus(0);
-        }if(status == 0){
-            appModelList.get(position).setStatus(1);
-        }
-        if(clickedApp.getStatus() == 0){
-            dbHelper.deleteApp(clickedApp.getAppname());
-        }if(clickedApp.getStatus() == 1){
-            dbHelper.addNewApp(clickedApp);
-        }
-        adapter.notifyItemChanged(position);
-    }
-
     private void filter(String appString){
         List<AppModel> filteredList = new ArrayList<>();
 
         for(AppModel app : appModelList){
             if(app.getAppname().toLowerCase().contains(appString.toLowerCase())){
+
                 filteredList.add(app);
             }
         }
@@ -139,7 +121,6 @@ public class AppLockListActivity extends AppCompatActivity {
     public void getInstalledApps(){
         List<PackageInfo> packageInfos = getPackageManager().getInstalledPackages(0);
 
-
         for (int i = 0; i<packageInfos.size(); i++){
             String name = packageInfos.get(i).applicationInfo.loadLabel(getPackageManager()).toString();
             Drawable icon = packageInfos.get(i).applicationInfo.loadIcon(getPackageManager());
@@ -147,43 +128,11 @@ public class AppLockListActivity extends AppCompatActivity {
 
             AppModel app = new AppModel(name, icon, 0, packname);
 
-            app = checkTheApp(app);
-
             appModelList.add(app);
 
         }
         adapter.notifyDataSetChanged();
         progressDialog.dismiss();
-    }
-
-    public AppModel checkTheApp(AppModel app){
-        blockedAppsList = allBlockedAppsList();
-
-        for (AppModel blocked_app : blockedAppsList) {
-            if(blocked_app.getAppname().equals(app.getAppname())){
-                app.setStatus(blocked_app.getStatus());
-            }
-        }
-
-        return app;
-    }
-
-    public List<AppModel> allBlockedAppsList(){
-        List<AppModel> myApps = new ArrayList<>();
-
-        myApps.clear();
-
-        Cursor res = dbHelper.getAllApps();
-
-        Drawable icon = null;
-
-        while(res.moveToNext()){
-            AppModel app = new AppModel(res.getString(0), icon,
-                    Integer.parseInt(res.getString(1)), res.getString(2) );
-            myApps.add(app);
-        }
-
-        return myApps;
     }
 
 }

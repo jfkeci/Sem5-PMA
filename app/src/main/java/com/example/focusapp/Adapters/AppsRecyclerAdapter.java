@@ -2,6 +2,9 @@ package com.example.focusapp.Adapters;
 
 
 import android.content.Context;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +25,13 @@ import java.util.List;
 public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapter.AppExampleViewHolder> {
 
     List<AppModel> appModels = new ArrayList<>();
+    List<AppModel> blockedAppsList = new ArrayList<>();
+
     Context context;
 
-
     private OnAppClickedListener mListener;
+
+    MyDbHelper dbHelper;
 
     public interface OnAppClickedListener{
         void onAppClick(int position);
@@ -38,6 +44,7 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
     public AppsRecyclerAdapter(List<AppModel> appModels, Context context) {
         this.appModels = appModels;
         this.context = context;
+        dbHelper = new MyDbHelper(context);
     }
 
     @NonNull
@@ -45,9 +52,8 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
     public AppExampleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(context).inflate(R.layout.app_row_layout, parent, false);
-        AppExampleViewHolder design = new AppExampleViewHolder(v, mListener);
 
-        return design;
+        return new AppExampleViewHolder(v, mListener);
     }
 
     @Override
@@ -57,12 +63,13 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
         holder.appName.setText(app.getAppname());
         holder.appIcon.setImageDrawable(app.getAppicon());
 
+        app = checkTheApp(app);
+
         if(app.getStatus() == 0){
             holder.lockIcon.setImageResource(R.drawable.ic_baseline_lock_open_24);
         }else{
             holder.lockIcon.setImageResource(R.drawable.ic_baseline_lock_24);
         }
-
 
     }
 
@@ -90,6 +97,9 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION){
                             listener.onAppClick(position);
+                            setAppStatus(position);
+                            Log.d("OnClick", "onClick: for the app"+ appModels.get(position).getAppname() +", clicked app status: " +appModels.get(position).getStatus());
+
                         }
                     }
                 }
@@ -99,6 +109,52 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
     public void filterList(List<AppModel> filteredList){
         appModels = filteredList;
         notifyDataSetChanged();
+    }
+
+    public void setAppStatus(int position){
+
+        AppModel app = appModels.get(position);
+
+        int status = app.getStatus();
+
+        if(status == 0){
+            appModels.get(position).setStatus(1);
+            dbHelper.addNewApp(appModels.get(position));
+        }if(status == 1){
+            appModels.get(position).setStatus(0);
+            dbHelper.deleteApp(appModels.get(position).getAppname());
+        }
+    }
+
+    public AppModel checkTheApp(AppModel app){
+        blockedAppsList.clear();
+        blockedAppsList = allBlockedAppsList();
+
+        for (AppModel blocked_app : blockedAppsList) {
+            if(blocked_app.getAppname().equals(app.getAppname())){
+                app.setStatus(blocked_app.getStatus());
+            }
+        }
+
+        return app;
+    }
+
+    public List<AppModel> allBlockedAppsList(){
+        List<AppModel> myApps = new ArrayList<>();
+
+        myApps.clear();
+
+        Cursor res = dbHelper.getAllApps();
+
+        Drawable icon = null;
+
+        while(res.moveToNext()){
+            AppModel app = new AppModel(res.getString(0), icon,
+                    Integer.parseInt(res.getString(1)), res.getString(2) );
+            myApps.add(app);
+        }
+
+        return myApps;
     }
 }
 

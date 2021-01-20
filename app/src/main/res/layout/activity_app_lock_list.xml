@@ -34,10 +34,10 @@
         android:id="@+id/saveBlockedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/etAppSearch"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/etAppSearch"
-        android:background="@drawable/button_green_bg"
-        android:layout_margin="3dp"
+        android:background="@drawable/button_green_square_bg"
+        android:layout_margin="10dp"
         android:text="save"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

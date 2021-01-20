@@ -64,7 +64,8 @@
         android:text="Event"
         app:layout_constraintTop_toBottomOf="@id/buttonPrev"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/saveEventButton" />
+        app:layout_constraintRight_toLeftOf="@id/saveEventButton"
+        android:background="@drawable/custom_edit_text"/>
 
     <ImageButton
         android:id="@+id/saveEventButton"

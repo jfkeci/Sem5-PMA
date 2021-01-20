@@ -1,6 +1,9 @@
 package com.example.focusapp.Fragments;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -9,9 +12,11 @@ import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -35,6 +40,7 @@ import android.widget.Toast;
 
 import com.example.focusapp.Adapters.MyRecyclerAdapter;
 import com.example.focusapp.Database.MyDbHelper;
+import com.example.focusapp.MainActivity;
 import com.example.focusapp.Models.Events;
 import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.User;
@@ -63,7 +69,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     public String dateSelected="";
     int nHour, nMinute;
 
-    int alarmYear, alarmMonth, alarmDay, alarmHour, alarmMinute;
+    public long atTime;
 
     int countFirst = 0;
 
@@ -75,11 +81,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     public SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
     public SimpleDateFormat currentMonthFormat = new SimpleDateFormat("MMMM yyyy");
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-    public SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
-    public SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
-    public SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
-    public SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
-    public SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
 
     private ImageButton buttonSetTime, buttonNext, buttonPrev, buttonSaveEvent;
     private TextView textViewTime, textViewDate;
@@ -148,10 +149,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
         todoAdapter.notifyDataSetChanged();
 
-        if(arrayListEvents.isEmpty()){
-            makeMyToast("No events for today");
-        }
-
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -169,22 +166,26 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                     int deleted = dbHelper.deleteEvent(event_id);
 
+
+
                     if(deleted == 1){
                         arrayListEvents.remove(deletedEvent);
                         todoAdapter.notifyItemRemoved(position);
                         InitCalendar();
+                        RemoveEventNotification(deletedEvent.getEVENT_ID());
+                        Log.d("Removing ", "onSwiped: delete notification for eventid :  " + deletedEvent.getEVENT_ID());
                     }
 
                     Snackbar.make(recyclerView, deletedEvent.getEVENT_CONTENT(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
                             boolean undone = dbHelper.addNewEventWithId(deletedEvent);
 
                             if(undone){
                                 arrayListEvents.add(position, deletedEvent);
                                 todoAdapter.notifyItemInserted(position);
                                 InitCalendar();
+                                SetEventNotification(deletedEvent);
                             }else{
                                 makeMyToast("Something went wrong!");
                             }
@@ -195,14 +196,13 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                 if(direction == ItemTouchHelper.RIGHT){
                     checkedEvent = arrayListEvents.get(position);
 
-                    arrayListEvents.remove(checkedEvent);
-                    todoAdapter.notifyItemRemoved(position);
-
                     boolean checked = dbHelper.eventSetChecked(String.valueOf(checkedEvent.getEVENT_ID()));
 
                     if(checked){
-                        makeMyToast("Awesome!");
+                        arrayListEvents.remove(checkedEvent);
+                        todoAdapter.notifyItemRemoved(position);
                         InitCalendar();
+                        RemoveEventNotification(checkedEvent.getEVENT_ID());
                     }else{
                         makeMyToast("Failed");
                     }
@@ -211,10 +211,10 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                         public void onClick(View v) {
                             boolean checked = dbHelper.eventUncheck(String.valueOf(checkedEvent.getEVENT_ID()));
                             if(checked){
-                                makeMyToast("Unchecked");
                                 arrayListEvents.add(position, checkedEvent);
                                 todoAdapter.notifyItemInserted(position);
                                 InitCalendar();
+                                SetEventNotification(checkedEvent);
                             }else{
                                 makeMyToast("Failed");
                             }
@@ -238,11 +238,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-
-
-
-
-    //spinner
     private void InitEventTypeSpinner(View v) {
         Spinner eventTypeSpinner = v.findViewById(R.id.eventTypeSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.eventTypes, android.R.layout.simple_spinner_item);
@@ -261,7 +256,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     }
 
     private void InitCalendar() {
-
         ArrayList<Events> arrayListAllEvents = new ArrayList<>();
         arrayListAllEvents.clear();
         arrayListAllEvents = allEventsList(false);
@@ -365,25 +359,32 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                 String datetime = makeDateAndTime(dateSelected, textViewTime.getText().toString());
 
                 if(eventContent.length()<1){
-                    makeMyToast("Not ready yet, Please write a description for your "+eventTypeSelected);
+                    makeMyToast("Please write a description for your "+eventTypeSelected);
                 }
                 if(eventContent.length()>1){
 
                     User currentUser = dbHelper.getUser();
+                    String userID = currentUser.getUser_id();
 
-                    boolean isInserted = dbHelper.addNewEvent(currentUser.getUser_id(), eventTypeSelected, eventContent, datetime);
+                    boolean isInserted = dbHelper.addNewEvent(userID, eventTypeSelected, eventContent, datetime);
 
                     if(isInserted){
-                        makeMyToast("Event added");
 
                         InitRecycleViewFunct(dateSelected);
 
                         InitCalendar();
 
+                        int id = getEventId(eventTypeSelected, eventContent, datetime);
+
+                        Log.d("", "notification event id " + id);
+                        Events newEvent = new Events(id, userID, eventTypeSelected, eventContent, datetime, false);
+
+                        SetEventNotification(newEvent);
+
                         textViewTime.setText("00:00");
                         editTextEvent.setText("Add new event");
                     }else{
-                        Toast.makeText(getActivity(), "Event NOT inserted, problem", Toast.LENGTH_LONG).show();
+                        makeMyToast("Failed to add new " + eventTypeSelected);
                     }
                 }
             }
@@ -397,9 +398,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
         Cursor res = dbHelper.getAllEventsByCheck(0);
 
-        if(res.getCount() == 0){
-            makeMyToast("Error, No events found");
-        }
         StringBuffer buffer = new StringBuffer();
         while(res.moveToNext()){
 
@@ -435,10 +433,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
         Cursor res = dbHelper.getAllEventsByCheck(0);
 
-        if(res.getCount() == 0){
-            makeMyToast("Error, No events found");
-        }
-        StringBuffer buffer = new StringBuffer();
         while(res.moveToNext()){
 
             boolean checked = false;
@@ -464,16 +458,78 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
     private void SetEventNotification(Events event){
 
+        SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+        SimpleDateFormat sdfMonth = new SimpleDateFormat("MM");
+        SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
+        SimpleDateFormat sdfHour = new SimpleDateFormat("HH");
+        SimpleDateFormat sdfMinute = new SimpleDateFormat("mm");
+
+        int nyear, nmonth, nday, nhour, nminute;
+
+        Date myDate;
+
+        try{
+
+            myDate = sdf.parse(event.getEVENT_DATE_TIME());
+
+            nyear = Integer.parseInt(sdfYear.format(myDate));
+            nmonth = Integer.parseInt(sdfMonth.format(myDate));
+            nday = Integer.parseInt(sdfDay.format(myDate));
+            nhour = Integer.parseInt(sdfHour.format(myDate));
+            nminute = Integer.parseInt(sdfMinute.format(myDate));
+
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+
         Intent intent = new Intent(getActivity().getBaseContext(), AlarmReceiver.class);
-        intent.putExtra("event_id", event.getEVENT_ID());
-        intent.putExtra("event_type", event.getEVENT_TYPE());
-        intent.putExtra("event_content", event.getEVENT_CONTENT());
+
+        int ev_id = event.getEVENT_ID();
+
+        intent.putExtra("event_id", String.valueOf(ev_id));
         intent.putExtra("event_date_time", event.getEVENT_DATE_TIME());
+        intent.putExtra("event_content", event.getEVENT_CONTENT());
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), ev_id, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        try{
+            Date date = sdf.parse(event.getEVENT_DATE_TIME());
+
+            atTime = date.getTime();
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, atTime, pendingIntent);
 
     }
 
+    private void RemoveEventNotification(int ev_id){
+
+        Intent intent = new Intent(getActivity().getBaseContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), ev_id, intent, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+
+    }
+
+    private int getEventId(String type, String content, String datetime){
+        int id = 0;
+        Cursor res = dbHelper.readEventId(type, content, datetime);
+
+        while(res.moveToNext()){
+            id = Integer.parseInt(res.getString(0));
+        }
+
+        res.close();
+
+        return id;
+    }
+
     private void makeMyToast(String message){
-            Toast.makeText(getActivity().getBaseContext(), "Message:  "+message, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getBaseContext(), ""+message, Toast.LENGTH_LONG).show();
     }
     public void makeMyMessage(String title, String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

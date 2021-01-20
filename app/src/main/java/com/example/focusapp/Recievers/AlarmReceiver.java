@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.os.Build;
 
@@ -22,15 +23,19 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String event = intent.getStringExtra("event");
-        String date = intent.getStringExtra("date");
-        int notificationId = intent.getIntExtra("id", 0);
+
+
+
+        String event = intent.getStringExtra("event_content");
+        String date = intent.getStringExtra("event_date_time");
+        int notificationId = intent.getIntExtra("event_id", 0);
+
         Intent activityIntent = new Intent(context, FragmentHolderActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        String channelId = "channel_id";
-        CharSequence channelName = "channel_name";
-        String description = "description";
+        String channelId = "channel_1";
+        CharSequence channelName = "events_channel";
+        String description = "Events_ToDos_Reminders";
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription(description);
@@ -39,15 +44,31 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         Notification notification = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_baseline_check_24)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentTitle(event)
                 .setContentText(date)
                 .setContentIntent(pendingIntent)
-                .setGroup("Group_calendar_view")
+                .setGroup("Group_focus_app")
                 .build();
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(notificationId, notification);
+
+        /*String channelId = intent.getStringExtra("channel_id");
+        String title = intent.getStringExtra("event_content");
+        int event_id = Integer.parseInt(intent.getStringExtra("event_id"));
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.ic_baseline_calendar_today_24)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentTitle(title)
+                .setContentText(String.valueOf(event_id))
+                .setSmallIcon(R.drawable.ic_baseline_check_24)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        notificationManagerCompat.notify(event_id, builder.build());
+
+        //notificationManagerCompat.cancel(200);*/
     }
 }

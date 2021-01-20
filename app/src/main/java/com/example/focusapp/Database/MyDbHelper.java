@@ -159,6 +159,26 @@ public class MyDbHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_EVENTS, null);
         return res;
     }
+
+    public Cursor readEventId(String type, String content, String datetime){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String [] Projections = {COL11};
+        String Selection = COL13 + "=? and " + COL14 + "=? and " + COL15 + "=?";
+        String [] SelectionArgs = {type, content, datetime};
+
+        return db.query(TABLE_EVENTS, Projections, Selection, SelectionArgs, null, null, null);
+    }
+
+    public int getNewEventId(){
+        String selectQuery= "SELECT * FROM " + TABLE_EVENTS +" ORDER BY "+ COL11 +" DESC LIMIT 1";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery(selectQuery, null);
+        int event_id = 0;
+        if(res.moveToFirst())
+            event_id  =  Integer.parseInt(res.getString( 0 ));
+        res.close();
+        return event_id;
+    }
     public boolean eventSetChecked(String EVENT_ID){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

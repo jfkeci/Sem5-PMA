@@ -3,9 +3,14 @@ package com.example.focusapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -20,6 +25,7 @@ import com.example.focusapp.Database.MyDbHelper;
 import com.example.focusapp.Models.Events;
 import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.Session;
+import com.example.focusapp.Recievers.AlarmReceiver;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         button=findViewById(R.id.startButton);
         twBanner = findViewById(R.id.twSplashBanner);
         twSlogan = findViewById(R.id.twSubBanner);
@@ -81,12 +88,15 @@ public class MainActivity extends AppCompatActivity {
         twBanner.setTypeface(MMedium);
         twSlogan.setTypeface(MLight);
 
+        startActivity(new Intent(MainActivity.this, AppLockListActivity.class));
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(dbHelper.userIsSet()){
                     backupData();
-                    startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
+                    //startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
+
                 }else{
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 }

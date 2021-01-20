@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.focusapp.Models.Notes;
 import com.example.focusapp.R;
@@ -54,7 +55,6 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter {
             twTitle = (TextView)itemView.findViewById(R.id.twNoteTitle);
             twContent = (TextView)itemView.findViewById(R.id.twNoteContent);
             twDate = (TextView)itemView.findViewById(R.id.twNoteDateTime);
-
 
             itemView.setOnClickListener(this);
         }

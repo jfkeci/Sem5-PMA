@@ -1,9 +1,12 @@
 package com.example.focusapp.Fragments;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -53,6 +56,8 @@ public class ToDoFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_to_do, container, false);
+
+        createNotificationChannel();
 
         recyclerView = v.findViewById(R.id.recyclerViewToDo);
 
@@ -226,6 +231,19 @@ public class ToDoFragment extends Fragment {
         }
 
         return myEvents;
+    }
+
+    public void createNotificationChannel(){
+        String channelId = "todo_fragment_notification_channel";
+        CharSequence channelName = "todo_fragment_channel";
+        String description = "todo_fragment_notifications";
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getActivity().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     private void makeMyToast(String message){
