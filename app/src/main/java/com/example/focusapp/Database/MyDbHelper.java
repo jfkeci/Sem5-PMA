@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import com.example.focusapp.Models.AppModel;
 import com.example.focusapp.Models.Events;
 import com.example.focusapp.Models.Notes;
+import com.example.focusapp.Models.Session;
 import com.example.focusapp.Models.User;
 
 import java.text.SimpleDateFormat;
@@ -46,14 +47,15 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public static final String COL35 = "NOTE_DATE_TIME";
 
 
-    //table session
+    //table study session
     public static final String TABLE_SESSIONS = "SESSIONS_TABLE";
     public static final String COL41 = "SESSION_ID";
     public static final String COL42 = "USER_ID";
     public static final String COL43 = "SESSION_LENGTH";
-    public static final String COL44 = "SESSION_DATE_TIME";
-    public static final String COL45 = "SESSION_POINTS";
-    public static final String COL46 = "SESSION_FINISHED";
+    public static final String COL44 = "SESSION_DATE";
+    public static final String COL45 = "SESSION_TIME";
+    public static final String COL46 = "SESSION_POINTS";
+    public static final String COL47 = "SESSION_FINISHED";
 
     //table apps to block
     public static final String TABLE_APPS = "APPS_TABLE";
@@ -85,7 +87,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         db.execSQL("create table " + TABLE_SESSIONS +
                 "(SESSION_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "USER_ID TEXT, SESSION_LENGTH TEXT, SESSION_DATE_TIME TEXT, " +
+                "USER_ID TEXT, SESSION_LENGTH TEXT, SESSION_DATE TEXT, SESSION_TIME TEXT," +
                 "SESSION_POINTS TEXT, SESSION_FINISHED INTEGER DEFAULT 0)");
 
         db.execSQL("create table " + TABLE_APPS + "(APP_NAME TEXT, " + "APP_STATUS INTEGER, " + "PACKAGE_NAME TEXT)");
@@ -358,5 +360,34 @@ public class MyDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         return db.delete(TABLE_APPS, "APP_NAME = ?", new String[]{app_name});
+    }
+
+    public boolean addNewSession(Session session){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int finished = 1;
+
+        if(session.isSESSION_FINISHED()){
+            finished = 1;
+        }else{
+            finished = 0;
+        }
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL42, session.getUSER_ID());
+        contentValues.put(COL43, session.getSESSION_LENGTH());
+        contentValues.put(COL44, session.getSESSION_DATE());
+        contentValues.put(COL45, session.getSESSION_TIME());
+        contentValues.put(COL46, session.getSESSION_POINTS());
+        contentValues.put(COL47, finished);
+
+        long result = db.insert(TABLE_SESSIONS, null, contentValues);
+
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
     }
 }

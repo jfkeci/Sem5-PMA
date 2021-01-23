@@ -28,12 +28,18 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
     ArrayList<Events> eventsList = new ArrayList<>();
     int listType;
 
-    public MyRecyclerAdapter() {}
 
     public MyRecyclerAdapter(Context context, ArrayList<Events> events, int listType) {
         this.context = context;
         this.eventsList = events;
         this.listType = listType;
+    }
+
+
+    public void setData(ArrayList<Events> eventsList)
+    {
+        this.eventsList = eventsList;
+        this.notifyDataSetChanged();
     }
 
     @NonNull
@@ -54,7 +60,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
         return eventsList.size();
     }
 
-    private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView textContent, textDate;
         private ImageView typeIcon, ivLeft, ivRight;
         private CardView cardView;
@@ -96,7 +102,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter {
                 textContent.setText(mainContent);
                 textDate.setText(eventsList.get(position).getEVENT_DATE_TIME());
 
-                Events posEvent = eventsList.get(position);
 
                 if((eventsList.get(position).getEVENT_TYPE()).equals("Event")){
                     typeIcon.setImageResource(R.drawable.ic_baseline_calendar_today_24);

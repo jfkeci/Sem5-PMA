@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.TimerFragment"
-    android:background="#211D44"
-    android:tag="timer_tag">
+    tools:context=".CountDownActivity"
+    android:background="#211D44">
 
     <ImageView
         android:id="@+id/ivTimerCircle"
@@ -21,7 +19,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
-
     <ImageView
         android:id="@+id/ivTimerArrow"
         android:layout_width="358dp"
@@ -34,67 +31,49 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
-
+    <TextView
+        android:id="@+id/textViewCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textSize="60sp"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
     <Button
-        android:id="@+id/buttonStartPause"
-        android:layout_width="110dp"
+        android:id="@+id/buttonStartPauseCoundown"
+        android:layout_width="250dp"
         android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/ivTimerArrow"
+        app:layout_constraintTop_toBottomOf="@id/textViewCountdown"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        android:layout_margin="20dp"
-        android:text="Lets go!"
+        android:layout_margin="15dp"
+        android:text="Start"
         android:textColor="#FFF"
         android:textSize="20sp"
         android:textAllCaps="false"
         android:background="@drawable/button_green_square_bg"/>
-
-    <Spinner
-        android:id="@+id/sessionLengthSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        app:layout_constraintTop_toTopOf="@id/buttonStartPause"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_goneMarginLeft="30dp"
-        android:layout_marginTop="15dp"/>
-
-    <Button
-        android:id="@+id/buttonDisableApps"
-        android:layout_width="110dp"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="@id/buttonStartPause"
-        app:layout_constraintRight_toLeftOf="@id/buttonStartPause"
-        app:layout_constraintHorizontal_bias="0.497"
-        android:text="Disabled Apps"
-        android:textColor="#AF3555"
-        android:textSize="20sp"
-        android:textAllCaps="false"
-        android:layout_marginRight="15dp"
-        android:background="@drawable/button_red_square_bg"
-        android:visibility="invisible"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleViewTimer"
         android:layout_width="match_parent"
         android:layout_height="140dp"
-        app:layout_constraintTop_toBottomOf="@id/buttonStartPause"
+        app:layout_constraintTop_toBottomOf="@id/buttonStartPauseCoundown"
         android:layout_margin="15dp"
         android:padding="5dp"
         android:scrollbars="vertical"/>
-
     <TextView
         android:id="@+id/textViewCredits"
         android:layout_width="3dp"
         android:layout_height="18dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="15dp"
+        android:layout_margin="20dp"
         android:textColor="@android:color/white"
         android:textSize="15sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycleViewTimer"
-        app:layout_goneMarginTop="5dp"/>
-
+        app:layout_constraintTop_toBottomOf="@id/recycleViewTimer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.focusapp.Fragments;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
@@ -65,6 +66,8 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 public class CalendarFragment extends Fragment  implements AdapterView.OnItemSelectedListener{
 
+    Context calContext;
+
     public String eventTypeSelected;
     public String dateSelected="";
     int nHour, nMinute;
@@ -73,7 +76,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
     int countFirst = 0;
 
-    private Events checkedEvent = new Events();
+    public Events checkedEvent = new Events();
     public Events deletedEvent = new Events();
 
     public ArrayList<Events> arrayListEvents = new ArrayList<>();
@@ -87,15 +90,18 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     private CompactCalendarView calendarView;
     private EditText editTextEvent;
 
-    private RecyclerView recyclerView;
+    public RecyclerView recyclerView;
 
     public MyDbHelper dbHelper;
 
-    public MyRecyclerAdapter todoAdapter;
+    public MyRecyclerAdapter calendarAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_calendar, container, false);
+
+        calContext = getActivity();
+
 
         textViewDate=v.findViewById(R.id.textViewDate);
         textViewTime = v.findViewById(R.id.textViewTime);
@@ -128,26 +134,18 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         return v;
     }
 
-
-    public void RefreshItHere(){
-        Date currentDate = Calendar.getInstance().getTime();
-        dateSelected = dateFormat.format(currentDate);
-        InitRecycleViewFunct(dateSelected);
-        InitCalendar();
-    }
-
     public void InitRecycleViewFunct(String dateSelected){
 
         arrayListEvents.clear();
 
         arrayListEvents = allEventsByDateList(dateSelected, false);
 
-        todoAdapter = new MyRecyclerAdapter(getActivity(), arrayListEvents, 0);
-        recyclerView.setAdapter(todoAdapter);
+        calendarAdapter = new MyRecyclerAdapter(getActivity(), arrayListEvents, 0);
+        recyclerView.setAdapter(calendarAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
-        todoAdapter.notifyDataSetChanged();
+        calendarAdapter.notifyDataSetChanged();
 
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -166,11 +164,9 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                     int deleted = dbHelper.deleteEvent(event_id);
 
-
-
                     if(deleted == 1){
                         arrayListEvents.remove(deletedEvent);
-                        todoAdapter.notifyItemRemoved(position);
+                        calendarAdapter.notifyItemRemoved(position);
                         InitCalendar();
                         RemoveEventNotification(deletedEvent.getEVENT_ID());
                         Log.d("Removing ", "onSwiped: delete notification for eventid :  " + deletedEvent.getEVENT_ID());
@@ -183,9 +179,10 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                             if(undone){
                                 arrayListEvents.add(position, deletedEvent);
-                                todoAdapter.notifyItemInserted(position);
+                                calendarAdapter.notifyItemInserted(position);
                                 InitCalendar();
                                 SetEventNotification(deletedEvent);
+
                             }else{
                                 makeMyToast("Something went wrong!");
                             }
@@ -200,7 +197,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                     if(checked){
                         arrayListEvents.remove(checkedEvent);
-                        todoAdapter.notifyItemRemoved(position);
+                        calendarAdapter.notifyItemRemoved(position);
                         InitCalendar();
                         RemoveEventNotification(checkedEvent.getEVENT_ID());
                     }else{
@@ -212,7 +209,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                             boolean checked = dbHelper.eventUncheck(String.valueOf(checkedEvent.getEVENT_ID()));
                             if(checked){
                                 arrayListEvents.add(position, checkedEvent);
-                                todoAdapter.notifyItemInserted(position);
+                                calendarAdapter.notifyItemInserted(position);
                                 InitCalendar();
                                 SetEventNotification(checkedEvent);
                             }else{
@@ -253,6 +250,18 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    public void getData()
+    {
+        arrayListEvents = allEventsByDateList(dateSelected, false);
+        calendarAdapter.setData(arrayListEvents);
     }
 
     private void InitCalendar() {
@@ -383,6 +392,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                         textViewTime.setText("00:00");
                         editTextEvent.setText("Add new event");
+
                     }else{
                         makeMyToast("Failed to add new " + eventTypeSelected);
                     }
@@ -562,4 +572,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
         return epoch;
     }
+
+
 }

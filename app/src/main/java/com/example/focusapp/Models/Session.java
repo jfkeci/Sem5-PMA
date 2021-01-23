@@ -2,16 +2,17 @@ package com.example.focusapp.Models;
 
 public class Session {
     int SESSION_ID;
-    String USER_ID, SESSION_LENGTH, SESSION_DATE_TIME, SESSION_POINTS;
+    String USER_ID, SESSION_LENGTH, SESSION_DATE, SESSION_TIME, SESSION_POINTS;
     boolean SESSION_FINISHED;
 
     public Session() {}
 
-    public Session(int SESSION_ID, String USER_ID, String SESSION_LENGTH, String SESSION_DATE_TIME, String SESSION_POINTS, boolean SESSION_FINISHED) {
+    public Session(int SESSION_ID, String USER_ID, String SESSION_LENGTH, String SESSION_DATE, String SESSION_TIME, String SESSION_POINTS, boolean SESSION_FINISHED) {
         this.SESSION_ID = SESSION_ID;
         this.USER_ID = USER_ID;
         this.SESSION_LENGTH = SESSION_LENGTH;
-        this.SESSION_DATE_TIME = SESSION_DATE_TIME;
+        this.SESSION_DATE = SESSION_DATE;
+        this.SESSION_TIME = SESSION_TIME;
         this.SESSION_POINTS = SESSION_POINTS;
         this.SESSION_FINISHED = SESSION_FINISHED;
     }
@@ -40,12 +41,20 @@ public class Session {
         this.SESSION_LENGTH = SESSION_LENGTH;
     }
 
-    public String getSESSION_DATE_TIME() {
-        return SESSION_DATE_TIME;
+    public String getSESSION_DATE() {
+        return SESSION_DATE;
     }
 
-    public void setSESSION_DATE_TIME(String SESSION_DATE_TIME) {
-        this.SESSION_DATE_TIME = SESSION_DATE_TIME;
+    public void setSESSION_DATE(String SESSION_DATE) {
+        this.SESSION_DATE = SESSION_DATE;
+    }
+
+    public String getSESSION_TIME() {
+        return SESSION_TIME;
+    }
+
+    public void setSESSION_TIME(String SESSION_TIME) {
+        this.SESSION_TIME = SESSION_TIME;
     }
 
     public String getSESSION_POINTS() {

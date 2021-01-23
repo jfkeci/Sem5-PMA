@@ -9,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FocusApp">
-        <activity android:name=".AppLockListActivity"></activity>
+        <activity android:name=".CountDownActivity"
+            android:label="@string/app_name"
+            android:theme="@style/CountDownTheme">
+        </activity>
+        <activity android:name=".AppLockListActivity" />
         <activity android:name=".FragmentHolderActivity" />
         <activity android:name=".RegisterUserActivity" />
         <activity android:name=".LoginActivity" />
@@ -22,10 +26,10 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".Recievers.AlarmReceiver"
-            android:exported="true"
-            android:enabled="true">
-        </receiver>
+        <receiver
+            android:name=".Recievers.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>

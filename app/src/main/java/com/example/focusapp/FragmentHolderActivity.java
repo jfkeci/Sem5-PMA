@@ -4,29 +4,28 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import com.example.focusapp.Adapters.AppPagerAdapter;
 import com.example.focusapp.Database.MyDbHelper;
 import com.example.focusapp.Fragments.CalendarFragment;
+import com.example.focusapp.Fragments.TimerFragment;
 import com.example.focusapp.Fragments.ToDoFragment;
+import com.example.focusapp.Models.Events;
+import com.example.focusapp.Singletons.ToDoFragmentSingleton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class FragmentHolderActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
-    CalendarFragment calendarFragment;
-    ToDoFragment toDoFragment;
+public class FragmentHolderActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment_holder);
 
-        createNotificationChannel();
 
         ViewPager2 viewPager2 = findViewById(R.id.viewPager);
         viewPager2.setAdapter(new AppPagerAdapter(this));
@@ -63,19 +62,5 @@ public class FragmentHolderActivity extends AppCompatActivity {
         }
         );
         tabLayoutMediator.attach();
-    }
-
-    public void createNotificationChannel(){
-        String channelId = "fragment_holder_activity_notification_channel";
-        CharSequence channelName = "fragment_holder_activity_channel";
-        String description = "fragment_holder_activity_notifications";
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(description);
-
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 }

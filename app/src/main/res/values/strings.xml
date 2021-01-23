@@ -9,4 +9,14 @@
         <item>ToDo</item>
     </string-array>
 
+    <string-array name="sessionLength">
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>20 min</item>
+        <item>25 min</item>
+        <item>30 min</item>
+        <item>35 min</item>
+        <item>40 min</item>
+    </string-array>
+
 </resources>

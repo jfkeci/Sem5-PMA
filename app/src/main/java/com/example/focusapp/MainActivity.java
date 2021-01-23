@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         button=findViewById(R.id.startButton);
         twBanner = findViewById(R.id.twSplashBanner);
         twSlogan = findViewById(R.id.twSubBanner);
@@ -87,15 +86,18 @@ public class MainActivity extends AppCompatActivity {
         button.setTypeface(MRegular);
         twBanner.setTypeface(MMedium);
         twSlogan.setTypeface(MLight);
+        boolean isUserSet = dbHelper.userIsSet();
 
-        startActivity(new Intent(MainActivity.this, AppLockListActivity.class));
+        if(isUserSet){
+            startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
+        }
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(dbHelper.userIsSet()){
-                    backupData();
-                    //startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
+                if(isUserSet){
+                    //backupData();
+                    startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
 
                 }else{
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     public void backupData(){
         ArrayList<Events> eventsList = allEventsList();
         ArrayList<Notes> notesList = allNotesList();
-        ArrayList<Session> sessionsList = allSessionList();
+        /*ArrayList<Session> sessionsList = allSessionList();*/
 
         if(!eventsList.isEmpty()){
             //removing old data from firebase
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 makeMyToast("Notes backed up!");
             }
         }
-        if(!sessionsList.isEmpty()){
+        /*if(!sessionsList.isEmpty()){
             //removing old data from firebase
             RemoveData("sessions");
 
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 makeMyToast("Notes backed up!");
             }
 
-        }
+        }*/
         progressBar.setVisibility(View.GONE);
     }
 
@@ -190,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
         return myNotes;
     }
-    public ArrayList<Session> allSessionList(){
+   /* public ArrayList<Session> allSessionList(){
         ArrayList<Session> mySessions = new ArrayList<>();
 
         mySessions.clear();
@@ -217,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return mySessions;
-    }
+    }*/
 
     public void RemoveData(String node){
         database.getReference(node).removeValue();
