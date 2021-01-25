@@ -30,6 +30,7 @@ import com.example.focusapp.AppLockListActivity;
 import com.example.focusapp.Database.MyDbHelper;
 import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.User;
+import com.example.focusapp.NoteArchiveActivity;
 import com.example.focusapp.NoteEditActivity;
 import com.example.focusapp.R;
 import com.google.android.material.snackbar.Snackbar;
@@ -43,7 +44,7 @@ import java.util.Date;
 
 public class NotesFragment extends Fragment {
 
-    private ImageButton buttonAddNote, buttonUpdateNote;
+    private Button buttonAddNote, openArchiveButton;
     private EditText etNoteTitle, etNoteContent;
     private  TextView twBanner, twSubbanner;
     private RecyclerView recyclerView;
@@ -75,8 +76,8 @@ public class NotesFragment extends Fragment {
 
         dbHelper = new MyDbHelper(getActivity().getBaseContext());
 
-        buttonAddNote = (ImageButton) v.findViewById(R.id.addNoteButton);
-        buttonUpdateNote = (ImageButton) v.findViewById(R.id.updateNoteButton);
+        buttonAddNote = (Button) v.findViewById(R.id.addNoteButton);
+        openArchiveButton = (Button) v.findViewById(R.id.buttonOpenArchive);
         etNoteTitle = v.findViewById(R.id.etNoteTitle);
         etNoteContent = v.findViewById(R.id.etNoteContent);
         twBanner = v.findViewById(R.id.banner);
@@ -96,7 +97,6 @@ public class NotesFragment extends Fragment {
         twSubbanner.setTypeface(MLight);
 
         InitButtonAddNewNote();
-        InitButtonUpdateNote();
 
         myNotes=allNotesList();
 
@@ -175,6 +175,14 @@ public class NotesFragment extends Fragment {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
+        openArchiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NoteArchiveActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return v;
     }
 
@@ -216,34 +224,6 @@ public class NotesFragment extends Fragment {
                         makeMyToast("Try again!");
                     }
                 }
-            }
-        });
-    }
-    public void InitButtonUpdateNote(){
-        buttonUpdateNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Date date = Calendar.getInstance().getTime();
-                String noteDateTime = sdf.format(date);
-
-                updatingNote.setNOTE_TITLE(etNoteTitle.getText().toString());
-                updatingNote.setNOTE_CONTENT(etNoteContent.getText().toString());
-                updatingNote.setNOTE_DATE_TIME(noteDateTime);
-
-                /*boolean isUpdated = dbHelper.updateNote(updatingNote);
-
-                if(isUpdated){
-                    etNoteContent.setText("");
-                    etNoteTitle.setText("");
-
-                    buttonUpdateNote.setVisibility(View.INVISIBLE);
-                    buttonAddNote.setVisibility(View.VISIBLE);
-
-                    getData();
-                }else{
-                    makeMyToast("Try again!");
-                }*/
             }
         });
     }

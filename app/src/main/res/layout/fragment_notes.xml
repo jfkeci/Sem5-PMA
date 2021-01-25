@@ -79,25 +79,25 @@
         android:layout_margin="5dp"
         android:padding="5dp"
         android:scrollbars="horizontal" />
-    <ImageButton
+    <Button
         android:id="@+id/addNoteButton"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_margin="15dp"
-        android:background="@drawable/ic_baseline_add_circle_22"
         android:visibility="visible"
-        android:backgroundTint="@color/MyTealGreenColor"/>
-    <ImageButton
-        android:id="@+id/updateNoteButton"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:backgroundTint="@color/MyTealGreenColor"
+        android:text="add note"/>
+
+    <Button
+        android:id="@+id/buttonOpenArchive"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:text="archive"
         android:layout_margin="15dp"
-        android:background="@drawable/ic_baseline_send_24"
-        android:visibility="invisible"
         android:backgroundTint="@color/MyTealGreenColor"/>
 
 

@@ -4,19 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NoteArchiveActivity">
+    tools:context=".NoteArchiveActivity"
+    android:background="@color/MyDarkBlueColor">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleViewArchive"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_margin="15dp"
-        android:padding="8dp">
+        android:layout_margin="20dp"
+        android:padding="8dp"
+        android:background="@color/MyDarkBlueColor">
 
     </androidx.recyclerview.widget.RecyclerView>
+    <ImageButton
+        android:id="@+id/archiveBack"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_margin="20dp"
+        android:background="@drawable/ic_baseline_arrow_back_white_24"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

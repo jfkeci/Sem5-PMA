@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cw"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="6dp"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="6dp"
+    app:cardBackgroundColor="#48B9AC">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp">
+        <ImageView
+            android:id="@+id/ivUpArchive"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_baseline_arrow_upward_24"/>
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintLeft_toRightOf="@id/ivUpArchive"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_baseline_edit_24"/>
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintRight_toLeftOf="@id/ivDownArchive"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_baseline_delete_sweep_white"/>
+        <ImageView
+            android:id="@+id/ivDownArchive"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_baseline_arrow_downward_24"/>
+        <View
+            android:id="@+id/cardLineArchive"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            app:layout_constraintTop_toBottomOf="@id/ivDownArchive"
+            android:layout_marginTop="2dp"/>
+
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@id/cardLineArchive"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:layout_marginTop="2dp"
+            android:gravity="left">
+
+            <TextView
+                android:id="@+id/twNoteDateTimeArchive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Content 1"
+                android:textSize="10dp"
+                android:layout_margin="3dp"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/twNoteTitleArchive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title 1"
+                android:textStyle="bold"
+                android:textSize="16dp"
+                android:layout_margin="3dp"
+                android:textColor="@color/white"/>
+            <TextView
+                android:id="@+id/twNoteContentArchive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Content 1"
+                android:textSize="13dp"
+                android:layout_margin="3dp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
