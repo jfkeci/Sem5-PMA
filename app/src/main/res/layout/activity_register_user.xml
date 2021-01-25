@@ -45,9 +45,11 @@
         android:hint="Email Address"
         android:inputType="textEmailAddress"
         android:textSize="24sp"
+        android:textColor="@color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inputUsername"/>
+        app:layout_constraintTop_toBottomOf="@id/inputUsername"
+        android:background="@drawable/custom_edit_text"/>
     <EditText
         android:id="@+id/inputPassword"
         android:layout_width="match_parent"
@@ -59,9 +61,11 @@
         android:hint="Password"
         android:inputType="textPassword"
         android:textSize="24sp"
+        android:textColor="@color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inputEmail"/>
+        app:layout_constraintTop_toBottomOf="@id/inputEmail"
+        android:background="@drawable/custom_edit_text"/>
     <EditText
         android:id="@+id/inputUsername"
         android:layout_width="match_parent"
@@ -73,9 +77,11 @@
         android:hint="Username"
         android:inputType="text"
         android:textSize="24sp"
+        android:textColor="@color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bannerSlogan"/>
+        app:layout_constraintTop_toBottomOf="@id/bannerSlogan"
+        android:background="@drawable/custom_edit_text" />
 
     <Button
         android:id="@+id/registerButton"

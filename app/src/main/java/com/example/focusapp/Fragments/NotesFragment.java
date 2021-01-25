@@ -1,6 +1,7 @@
 package com.example.focusapp.Fragments;
 
 import android.content.ClipData;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
@@ -25,9 +26,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.focusapp.Adapters.NotesRecyclerAdapter;
+import com.example.focusapp.AppLockListActivity;
 import com.example.focusapp.Database.MyDbHelper;
 import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.User;
+import com.example.focusapp.NoteEditActivity;
 import com.example.focusapp.R;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -86,7 +89,6 @@ public class NotesFragment extends Fragment {
 
         Typeface MLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/MLight.ttf");
         Typeface MMedium = Typeface.createFromAsset(getActivity().getAssets(), "fonts/MLight.ttf");
-        Typeface MRegular = Typeface.createFromAsset(getActivity().getAssets(), "fonts/MLight.ttf");
 
         etNoteTitle.setTypeface(MMedium);
         etNoteContent.setTypeface(MLight);
@@ -96,82 +98,22 @@ public class NotesFragment extends Fragment {
         InitButtonAddNewNote();
         InitButtonUpdateNote();
 
-        InitRecycleView();
-
-        return v;
-    }
-
-    public void InitButtonAddNewNote(){
-        buttonAddNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Date date = Calendar.getInstance().getTime();
-                String noteDateTime = sdf.format(date);
-
-                String title="";
-                String content="";
-
-                title = etNoteTitle.getText().toString();
-                content = etNoteContent.getText().toString();
-
-                if(title.isEmpty() && content.isEmpty()){
-
-                }else{
-                    boolean isInserted = dbHelper.addNewNote(uid, title, content, noteDateTime);
-                    if(isInserted){
-                        makeMyToast("Note added");
-                        etNoteTitle.setText("");
-                        etNoteContent.setText("");
-                        InitRecycleView();
-                    }else{
-                        makeMyToast("Try again!");
-                    }
-                }
-            }
-        });
-    }
-    public void InitButtonUpdateNote(){
-        buttonUpdateNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Date date = Calendar.getInstance().getTime();
-                String noteDateTime = sdf.format(date);
-
-                updatingNote.setNOTE_TITLE(etNoteTitle.getText().toString());
-                updatingNote.setNOTE_CONTENT(etNoteContent.getText().toString());
-                updatingNote.setNOTE_DATE_TIME(noteDateTime);
-
-                boolean isUpdated = dbHelper.updateNote(updatingNote);
-
-                if(isUpdated){
-                    etNoteContent.setText("");
-                    etNoteTitle.setText("");
-
-                    buttonUpdateNote.setVisibility(View.INVISIBLE);
-                    buttonAddNote.setVisibility(View.VISIBLE);
-
-                    InitRecycleView();
-                }else{
-                    makeMyToast("Try again!");
-                }
-            }
-        });
-    }
-
-    public void InitRecycleView(){
-
-        myNotes.clear();
-
         myNotes=allNotesList();
 
-        notesAdapter = new NotesRecyclerAdapter(getActivity().getBaseContext(), myNotes);
+        notesAdapter = new NotesRecyclerAdapter(getActivity(), myNotes);
         recyclerView.setAdapter(notesAdapter);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 //        recyclerView.setItemAnimator(new DefaultItemAnimator());
         notesAdapter.notifyDataSetChanged();
+
+        notesAdapter.setOnLongItemClickListener(new NotesRecyclerAdapter.OnLongNoteClickedListener() {
+            @Override
+            public void onNoteClicked(int position) {
+                notesAdapter.notifyDataSetChanged();
+            }
+        });
 
         if(myNotes.isEmpty()){
             makeMyToast("No notes");
@@ -197,7 +139,7 @@ public class NotesFragment extends Fragment {
                         myNotes.remove(position);
                         notesAdapter.notifyItemRemoved(position);
                     }
-                    Snackbar.make(recyclerView, deletedNote.getNOTE_TITLE(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    Snackbar.make(recyclerView, "Deleted", Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             boolean undone = dbHelper.addNewNoteWithId(deletedNote.getNOTE_ID(), deletedNote.getUSER_ID(), deletedNote.getNOTE_TITLE(), deletedNote.getNOTE_CONTENT(), deletedNote.getNOTE_DATE_TIME());
@@ -211,30 +153,19 @@ public class NotesFragment extends Fragment {
                     }).show();
                 }
                 if (direction == ItemTouchHelper.UP) {
-
-                    makeMyToast("Edit your note");
-
                     updatingNote = myNotes.get(position);
 
                     myNotes.remove(position);
                     notesAdapter.notifyItemRemoved(position);
 
-                    buttonAddNote.setVisibility(View.INVISIBLE);
-                    buttonUpdateNote.setVisibility(View.VISIBLE);
+                    dbHelper.setNoteArchived(updatingNote.getNOTE_ID(), 1);
 
-                    etNoteTitle.setText(updatingNote.getNOTE_TITLE());
-                    etNoteContent.setText(updatingNote.getNOTE_CONTENT());
-
-                    Snackbar.make(recyclerView, updatingNote.getNOTE_TITLE(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    Snackbar.make(recyclerView, "Archived", Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
-                            //dbHelper.addNewNoteWithId(updatingNote.getNOTE_ID(), updatingNote.getUSER_ID(), updatingNote.getNOTE_TITLE(), updatingNote.getNOTE_CONTENT(), updatingNote.getNOTE_DATE_TIME());
+                            dbHelper.setNoteArchived(updatingNote.getNOTE_ID(), 0);
                             myNotes.add(position, updatingNote);
                             notesAdapter.notifyItemInserted(position);
-                            etNoteTitle.setText("");
-                            etNoteContent.setText("");
-
                         }
                     }).show();
                 }
@@ -243,15 +174,86 @@ public class NotesFragment extends Fragment {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
+        return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    public void getData()
+    {
+        myNotes = allNotesList();
+        notesAdapter.setData(myNotes);
+    }
+
+    public void InitButtonAddNewNote(){
+        buttonAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date date = Calendar.getInstance().getTime();
+                String noteDateTime = sdf.format(date);
+
+                String title="";
+                String content="";
+
+                title = etNoteTitle.getText().toString();
+                content = etNoteContent.getText().toString();
+
+                if(title.isEmpty() && content.isEmpty()){
+
+                }else{
+                    boolean isInserted = dbHelper.addNewNote(uid, title, content, noteDateTime);
+                    if(isInserted){
+                        makeMyToast("Note added");
+                        etNoteTitle.setText("");
+                        etNoteContent.setText("");
+                        getData();
+                    }else{
+                        makeMyToast("Try again!");
+                    }
+                }
+            }
+        });
+    }
+    public void InitButtonUpdateNote(){
+        buttonUpdateNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Date date = Calendar.getInstance().getTime();
+                String noteDateTime = sdf.format(date);
+
+                updatingNote.setNOTE_TITLE(etNoteTitle.getText().toString());
+                updatingNote.setNOTE_CONTENT(etNoteContent.getText().toString());
+                updatingNote.setNOTE_DATE_TIME(noteDateTime);
+
+                /*boolean isUpdated = dbHelper.updateNote(updatingNote);
+
+                if(isUpdated){
+                    etNoteContent.setText("");
+                    etNoteTitle.setText("");
+
+                    buttonUpdateNote.setVisibility(View.INVISIBLE);
+                    buttonAddNote.setVisibility(View.VISIBLE);
+
+                    getData();
+                }else{
+                    makeMyToast("Try again!");
+                }*/
+            }
+        });
+    }
 
     public ArrayList<Notes> allNotesList(){
         ArrayList<Notes> dbNotes = new ArrayList<>();
 
         dbNotes.clear();
 
-        Cursor res = dbHelper.getAllNotes();
+        Cursor res = dbHelper.getAllUnarchivedNotes();
 
         if(res.getCount() == 0){
             makeMyToast("Error, No notes found");

@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.focusapp.Adapters.MyRecyclerAdapter;
@@ -38,6 +40,10 @@ public class ToDoFragment extends Fragment {
 
     public RecyclerView recyclerViewToDo;
     public RecyclerView recyclerViewChecked;
+
+    public ConstraintLayout constraintLayoutToDo, constraintLayoutChecked;
+    public TextView tw1, tw2;
+
 
     public MyDbHelper dbHelper;
     public MyRecyclerAdapter todoAdapter;
@@ -59,6 +65,37 @@ public class ToDoFragment extends Fragment {
 
         recyclerViewToDo = todoView.findViewById(R.id.recyclerViewToDo);
         recyclerViewChecked = todoView.findViewById(R.id.recyclerViewToDoDone);
+
+        constraintLayoutToDo = todoView.findViewById(R.id.constraintLayoutToDo);
+        constraintLayoutChecked = todoView.findViewById(R.id.constraintLayoutChecked);
+
+        ConstraintLayout.LayoutParams lpTodo = (ConstraintLayout.LayoutParams) constraintLayoutToDo.getLayoutParams();
+        ConstraintLayout.LayoutParams lpChecked = (ConstraintLayout.LayoutParams) constraintLayoutChecked.getLayoutParams();
+
+
+        tw1 = todoView.findViewById(R.id.tw1);
+        tw2 = todoView.findViewById(R.id.tw2);
+
+        tw1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lpChecked.height = 550;
+                lpTodo.height = 1100;
+                constraintLayoutToDo.setLayoutParams(lpTodo);
+                constraintLayoutChecked.setLayoutParams(lpChecked);
+            }
+        });
+        tw2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lpChecked.height = 1100;
+                lpTodo.height = 550;
+                constraintLayoutToDo.setLayoutParams(lpTodo);
+                constraintLayoutChecked.setLayoutParams(lpChecked);
+            }
+        });
+
+
 
 
         //------------------------------RecycleView Checked Events------------------------------

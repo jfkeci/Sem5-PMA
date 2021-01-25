@@ -108,11 +108,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void backupData(){
-        ArrayList<Events> eventsList = allEventsList();
-        ArrayList<Notes> notesList = allNotesList();
+        /*ArrayList<Events> eventsList = allEventsList();
+        ArrayList<Notes> notesList = allNotesList();*/
         /*ArrayList<Session> sessionsList = allSessionList();*/
 
-        if(!eventsList.isEmpty()){
+        /*if(!eventsList.isEmpty()){
             //removing old data from firebase
             RemoveData("events");
 
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 makeMyToast("Notes backed up!");
             }
-        }
+        }*/
         /*if(!sessionsList.isEmpty()){
             //removing old data from firebase
             RemoveData("sessions");
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
     }
 
-    public ArrayList<Events> allEventsList(){
+    /*public ArrayList<Events> allEventsList(){
         ArrayList<Events> myEvents = new ArrayList<>();
 
         myEvents.clear();
@@ -171,8 +171,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return myEvents;
-    }
-    public ArrayList<Notes> allNotesList(){
+    }*/
+    /*public ArrayList<Notes> allNotesList(){
         ArrayList<Notes> myNotes = new ArrayList<>();
 
         myNotes.clear();
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return myNotes;
-    }
+    }*/
    /* public ArrayList<Session> allSessionList(){
         ArrayList<Session> mySessions = new ArrayList<>();
 

@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.Session;
 import com.example.focusapp.R;
 
@@ -28,6 +29,12 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
     public SessionsRecyclerAdapter(Context context, ArrayList<Session> sessions) {
         this.context = context;
         this.sessionsList = sessions;
+    }
+
+    public void setData(ArrayList<Session> sessionsList)
+    {
+        this.sessionsList = sessionsList;
+        this.notifyDataSetChanged();
     }
 
     @NonNull

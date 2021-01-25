@@ -45,6 +45,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public static final String COL33 = "NOTE_TITLE";
     public static final String COL34 = "NOTE_CONTENT";
     public static final String COL35 = "NOTE_DATE_TIME";
+    public static final String COL36 = "ARCHIVED";
 
 
     //table study session
@@ -83,7 +84,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_NOTES +
                 "(NOTE_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "USER_ID TEXT, NOTE_TITLE TEXT, NOTE_CONTENT TEXT, " +
-                "NOTE_DATE_TIME TEXT)");
+                "NOTE_DATE_TIME TEXT, ARCHIVED INTEGER DEFAULT 0)");
 
         db.execSQL("create table " + TABLE_SESSIONS +
                 "(SESSION_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -258,6 +259,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL33, note_title);
         contentValues.put(COL34, note_content);
         contentValues.put(COL35, note_DateTime);
+        contentValues.put(COL36, 0);
 
         long result = db.insert(TABLE_NOTES, null, contentValues);
 
@@ -267,6 +269,12 @@ public class MyDbHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    public Cursor getNoteById(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NOTES+" WHERE NOTE_ID='" + id + "'", null);
+        return res;
+    }
+
     public boolean addNewNoteWithId(int nid, String uid, String note_title, String note_content, String note_DateTime){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -276,6 +284,8 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL33, note_title);
         contentValues.put(COL34, note_content);
         contentValues.put(COL35, note_DateTime);
+        contentValues.put(COL36, 0);
+
 
         long result = db.insert(TABLE_NOTES, null, contentValues);
 
@@ -286,20 +296,37 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getAllNotes(){
+
+    public Cursor getAllUnarchivedNotes(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NOTES, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NOTES +" WHERE ARCHIVED='" + '0' + "'", null);
+        return res;
+    }
+    public Cursor getAllArchivedNotes(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NOTES +" WHERE ARCHIVED='" + '1' + "'", null);
         return res;
     }
 
-    public boolean updateNote(Notes note){
-        String nid = String.valueOf(note.getNOTE_ID());
+    public boolean updateNote(int id, String title, String content, String datetime){
+
+        String nid = String.valueOf(id);
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL33, note.getNOTE_TITLE());
-        contentValues.put(COL34, note.getNOTE_CONTENT());
-        contentValues.put(COL35, note.getNOTE_DATE_TIME());
+        contentValues.put(COL33, title);
+        contentValues.put(COL34, content);
+        contentValues.put(COL35, datetime);
+        db.update(TABLE_NOTES, contentValues, "NOTE_ID = ?", new String[]{nid});
+
+        return true;
+    }
+    public boolean setNoteArchived(int id, int yn){
+        String nid = String.valueOf(id);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL36, yn);
         db.update(TABLE_NOTES, contentValues, "NOTE_ID = ?", new String[]{nid});
 
         return true;
