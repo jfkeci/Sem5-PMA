@@ -35,7 +35,7 @@
         android:id="@+id/textViewCountdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:00"
+        android:text="@string/midnight_time"
         android:textSize="60sp"
         android:textColor="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
@@ -51,7 +51,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         android:layout_margin="15dp"
-        android:text="Start"
+        android:text="@string/start"
         android:textColor="#FFF"
         android:textSize="20sp"
         android:textAllCaps="false"
@@ -64,4 +64,16 @@
         android:layout_margin="15dp"
         android:padding="5dp"
         android:scrollbars="vertical"/>
+    <TextView
+        android:id="@+id/textViewCredits"
+        android:layout_width="3dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="20dp"
+        android:layout_margin="20dp"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycleViewTimer" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

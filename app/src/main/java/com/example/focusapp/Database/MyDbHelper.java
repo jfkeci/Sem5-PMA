@@ -21,7 +21,7 @@ import java.util.Date;
 
 public class MyDbHelper extends SQLiteOpenHelper {
 
-    //database
+    //database name
     public static final String DATABASE_NAME = "focus.db";
     //table events
     public static final String TABLE_EVENTS = "EVENTS_TABLE";
@@ -46,7 +46,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public static final String COL34 = "NOTE_CONTENT";
     public static final String COL35 = "NOTE_DATE_TIME";
     public static final String COL36 = "ARCHIVED";
-
 
     //table study session
     public static final String TABLE_SESSIONS = "SESSIONS_TABLE";
@@ -93,7 +92,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         db.execSQL("create table " + TABLE_APPS + "(APP_NAME TEXT, " + "APP_STATUS INTEGER, " + "PACKAGE_NAME TEXT)");
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS);
@@ -103,7 +101,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APPS);
         onCreate(db);
     }
-
     public boolean addNewEvent(String user_id, String event_type, String event_content, String date_time){
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -123,10 +120,8 @@ public class MyDbHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-
     public boolean addNewEventWithId(Events event){
         int check = 1;
-
         SQLiteDatabase db = this.getWritableDatabase();
 
         if(event.isCHECKED()){
@@ -134,7 +129,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }else{
             check = 0;
         }
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL11, event.getEVENT_ID());
         contentValues.put(COL12, event.getUSER_ID());
@@ -151,7 +145,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-
     public Cursor getAllEventsByCheck(int check){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_EVENTS+" WHERE CHECKED='" + check + "'", null);
@@ -162,7 +155,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_EVENTS, null);
         return res;
     }
-
     public Cursor readEventId(String type, String content, String datetime){
         SQLiteDatabase db = this.getWritableDatabase();
         String [] Projections = {COL11};
@@ -171,7 +163,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         return db.query(TABLE_EVENTS, Projections, Selection, SelectionArgs, null, null, null);
     }
-
     public int getNewEventId(){
         String selectQuery= "SELECT * FROM " + TABLE_EVENTS +" ORDER BY "+ COL11 +" DESC LIMIT 1";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -224,7 +215,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-
     public boolean userIsSet(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USER, null);
@@ -238,7 +228,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
             return false;
         }
     }
-
     public User getUser(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USER, null);
@@ -250,11 +239,29 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }
         return user;
     }
-
     public boolean addNewNote(String uid, String note_title, String note_content, String note_DateTime){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
+        contentValues.put(COL32, uid);
+        contentValues.put(COL33, note_title);
+        contentValues.put(COL34, note_content);
+        contentValues.put(COL35, note_DateTime);
+        contentValues.put(COL36, 0);
+
+        long result = db.insert(TABLE_NOTES, null, contentValues);
+
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    public boolean addNewNoteWithId(int nid, String uid, String note_title, String note_content, String note_DateTime){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL31, nid);
         contentValues.put(COL32, uid);
         contentValues.put(COL33, note_title);
         contentValues.put(COL34, note_content);
@@ -274,29 +281,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NOTES+" WHERE NOTE_ID='" + id + "'", null);
         return res;
     }
-
-    public boolean addNewNoteWithId(int nid, String uid, String note_title, String note_content, String note_DateTime){
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL31, nid);
-        contentValues.put(COL32, uid);
-        contentValues.put(COL33, note_title);
-        contentValues.put(COL34, note_content);
-        contentValues.put(COL35, note_DateTime);
-        contentValues.put(COL36, 0);
-
-
-        long result = db.insert(TABLE_NOTES, null, contentValues);
-
-        if(result == -1){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-
     public Cursor getAllUnarchivedNotes(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NOTES +" WHERE ARCHIVED='" + '0' + "'", null);
@@ -307,7 +291,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NOTES +" WHERE ARCHIVED='" + '1' + "'", null);
         return res;
     }
-
     public boolean updateNote(int id, String title, String content, String datetime){
 
         String nid = String.valueOf(id);
@@ -331,64 +314,16 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         return true;
     }
-
     public Integer deleteNote(String NOTE_ID){
         SQLiteDatabase db = this.getWritableDatabase();
 
         return db.delete(TABLE_NOTES, "NOTE_ID = ?", new String[]{NOTE_ID});
     }
-
-    public void addNotesList(ArrayList<Notes> notesList){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM "+TABLE_NOTES);
-
-        for (Notes note: notesList) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(COL31, note.getNOTE_ID());
-            contentValues.put(COL32, note.getUSER_ID());
-            contentValues.put(COL33, note.getNOTE_TITLE());
-            contentValues.put(COL34, note.getNOTE_CONTENT());
-            contentValues.put(COL35, note.getNOTE_DATE_TIME());
-
-            long result = db.insert(TABLE_NOTES, null, contentValues);
-        }
-    }
-
     public Cursor getAllSessions(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SESSIONS, null);
         return res;
     }
-
-    public Cursor getAllApps(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_APPS, null);
-        return res;
-    }
-
-    public boolean addNewApp(AppModel app){
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL51, app.getAppname());
-        contentValues.put(COL52, app.getStatus());
-        contentValues.put(COL53, app.getPackagename());
-
-        long result = db.insert(TABLE_APPS, null, contentValues);
-
-        if(result == -1){
-            return false;
-        }else{
-            return true;
-        }
-    }
-    public Integer deleteApp(String app_name){
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        return db.delete(TABLE_APPS, "APP_NAME = ?", new String[]{app_name});
-    }
-
     public boolean addNewSession(Session session){
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -410,7 +345,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL43, session.getSESSION_LENGTH());
         contentValues.put(COL44, session.getSESSION_DATE());
         contentValues.put(COL45, session.getSESSION_TIME());
-        contentValues.put(COL46, session.getSESSION_POINTS());
+        contentValues.put(COL46, points);
         contentValues.put(COL47, finished);
 
         long result = db.insert(TABLE_SESSIONS, null, contentValues);
@@ -420,5 +355,31 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }else{
             return true;
         }
+    }
+    public Cursor getAllApps(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_APPS, null);
+        return res;
+    }
+    public boolean addNewApp(AppModel app){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL51, app.getAppname());
+        contentValues.put(COL52, app.getStatus());
+        contentValues.put(COL53, app.getPackagename());
+
+        long result = db.insert(TABLE_APPS, null, contentValues);
+
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    public Integer deleteApp(String app_name){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        return db.delete(TABLE_APPS, "APP_NAME = ?", new String[]{app_name});
     }
 }

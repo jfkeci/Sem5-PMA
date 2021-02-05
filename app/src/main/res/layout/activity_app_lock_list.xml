@@ -38,6 +38,6 @@
         app:layout_constraintLeft_toRightOf="@id/etAppSearch"
         android:background="@drawable/button_green_square_bg"
         android:layout_margin="10dp"
-        android:text="save"/>
+        android:text="@string/save"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

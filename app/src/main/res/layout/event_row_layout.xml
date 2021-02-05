@@ -29,7 +29,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:layout_marginTop="3dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:visibility="visible"
                     android:backgroundTint="@color/black"/>
 
@@ -37,20 +37,18 @@
                     android:id="@+id/textContentSingleEvent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
                     app:layout_constraintTop_toTopOf="@id/imageViewSingleEvent"
                     app:layout_constraintLeft_toRightOf="@id/imageViewSingleEvent"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:textColor="@color/white"/>
 
                 <TextView
                     android:id="@+id/textDateSingleEvent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="TextView"
+                    android:layout_marginStart="5dp"
                     android:textSize="8sp"
                     app:layout_constraintLeft_toLeftOf="@id/textContentSingleEvent"
                     app:layout_constraintTop_toBottomOf="@id/textContentSingleEvent"

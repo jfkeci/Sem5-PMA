@@ -237,7 +237,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
     private void InitEventTypeSpinner(View v) {
         Spinner eventTypeSpinner = v.findViewById(R.id.eventTypeSpinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.eventTypes, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.eventTypes, R.layout.spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         eventTypeSpinner.setAdapter(adapter);
         eventTypeSpinner.setOnItemSelectedListener(this);

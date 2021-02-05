@@ -28,6 +28,8 @@ import com.example.focusapp.Fragments.TimerFragment;
 import com.example.focusapp.Models.Session;
 import com.example.focusapp.Models.User;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +40,7 @@ public class CountDownActivity extends AppCompatActivity {
     public long START_TIME_IN_MILLIS;
     public long TimeLeftInMillis;
 
-    private TextView TextViewCountDown;
+    private TextView TextViewCountDown,TextViewCredits;
     private Button ButtonStartPause;
     ImageView ivClock, ivArrow;
 
@@ -68,7 +70,7 @@ public class CountDownActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.activity_count_down);
 
-
+        TextViewCredits = findViewById(R.id.textViewCredits);
         TextViewCountDown = findViewById(R.id.textViewCountdown);
         ButtonStartPause = findViewById(R.id.buttonStartPauseCoundown);
         ivClock = findViewById(R.id.ivTimerCircle);
@@ -108,6 +110,9 @@ public class CountDownActivity extends AppCompatActivity {
         anim.setRepeatCount(seconds);
         anim.setRepeatMode(ObjectAnimator.RESTART);
 
+        String creditCount = CountCredits();
+        TextViewCredits.setText(creditCount);
+
         InitRecycleViewSessions();
 
         ButtonStartPause.setOnClickListener(new View.OnClickListener() {
@@ -125,11 +130,8 @@ public class CountDownActivity extends AppCompatActivity {
                 }
             }
         });
-
         updateCountDownText();
-
     }
-
     private void startTimer(){
         countDownTimer = new CountDownTimer(TimeLeftInMillis, 1000) {
             @Override
@@ -152,7 +154,6 @@ public class CountDownActivity extends AppCompatActivity {
         }.start();
         TimerRunning = true;
     }
-
     private void pauseTimer(){
         TimerPaused = true;
         countDownTimer.cancel();
@@ -160,14 +161,12 @@ public class CountDownActivity extends AppCompatActivity {
         ButtonStartPause.setText("Continue");
         ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
     }
-
     private void resetTimer(){
         TimeLeftInMillis = START_TIME_IN_MILLIS;
         updateCountDownText();
         ButtonStartPause.setText("Start");
         ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
     }
-
     private void updateCountDownText(){
         int minutes = (int) (TimeLeftInMillis / 1000) / 60;
         int seconds = (int) (TimeLeftInMillis / 1000) % 60;
@@ -176,7 +175,6 @@ public class CountDownActivity extends AppCompatActivity {
 
         TextViewCountDown.setText(TimeLeftFormatted);
     }
-
     private void showMessage(){
         final AlertDialog areYouSure = new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
@@ -201,7 +199,6 @@ public class CountDownActivity extends AppCompatActivity {
 
             }
         });
-
         Button buttonCancel = areYouSure.getButton(AlertDialog.BUTTON_NEGATIVE);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,7 +211,6 @@ public class CountDownActivity extends AppCompatActivity {
             }
         });
     }
-
     public void InitRecycleViewSessions(){
 
         sessionsAdapter = new SessionsRecyclerAdapter(this, allSessionsList());
@@ -224,38 +220,46 @@ public class CountDownActivity extends AppCompatActivity {
 
         sessionsAdapter.notifyDataSetChanged();
     }
-
     public ArrayList<Session> allSessionsList(){
         ArrayList<Session> mySessions = new ArrayList<>();
-
-        mySessions.clear();
 
         Cursor res = dbHelper.getAllSessions();
 
         while(res.moveToNext()){
-
             int id = Integer.parseInt(res.getString(0));
 
             boolean finished = true;
 
-            if(Integer.parseInt(res.getString(5)) == 1){
+            if(Integer.parseInt(res.getString(6)) == 1){
                 finished = true;
-            }if(Integer.parseInt(res.getString(5)) == 0){
+            }if(Integer.parseInt(res.getString(6)) == 0){
                 finished = false;
             }
-
             Session session = new Session(id, res.getString(1),
                     res.getString(2), res.getString(3),
                     res.getString(4), res.getString(5), finished );
 
-            mySessions.add(session);
+            mySessions.add(0, session);
         }
-
         return mySessions;
     }
+    public String CountCredits(){
+        int credits = 0;
+        String sCredits="";
+        ArrayList<Session> mySessions = allSessionsList();
 
+        for (Session session : mySessions){
+            float points = Float.parseFloat(session.getSESSION_POINTS());
+            credits+=points;
+        }
+        if(credits > 0){
+            sCredits = "You have: " +String.valueOf(credits)+ " credits";
+        }else{
+            sCredits = "Try, you can do it";
+        }
+        return sCredits;
+    }
     public long getSessionLength(String sessionLength){
-
         if(sessionLength.contains("10")){
             return 600000;
         }if(sessionLength.contains("15")){
@@ -275,7 +279,6 @@ public class CountDownActivity extends AppCompatActivity {
     }
 
     public String getSessionPoints(String sessionLength){
-
         if(sessionLength.contains("10")){
             return "10";
         }if(sessionLength.contains("15")){

@@ -15,7 +15,7 @@
         app:layout_constraintTop_toBottomOf="@id/calendarView"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginStart="10dp"/>
     <TextView
         android:id="@+id/textViewDate"
         android:layout_width="wrap_content"
@@ -24,7 +24,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="15dp"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:textColor="@color/white"/>
     <ImageButton
         android:id="@+id/buttonNext"
         android:layout_width="40dp"
@@ -33,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@id/calendarView"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginEnd="10dp"/>
 
     <com.github.sundeepk.compactcalendarview.CompactCalendarView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -61,9 +62,9 @@
         android:layout_margin="20dp"
         android:ems="10"
         android:inputType="textShortMessage"
-        android:text="Event"
+        android:text="@string/event_text"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/buttonPrev"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/saveEventButton"
         android:background="@drawable/custom_edit_text"/>
@@ -74,7 +75,7 @@
         android:layout_height="40dp"
         app:layout_constraintTop_toTopOf="@id/editTextEvent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/ic_baseline_add_circle_22"
         android:backgroundTint="@color/MyTealGreenColor"/>
 
@@ -82,19 +83,20 @@
         android:id="@+id/textViewEventType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="3dp"
-        android:text="Event Type: "
-        app:layout_constraintTop_toBottomOf="@id/editTextEvent"
+        android:text="@string/event_type"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/buttonPrev"
         app:layout_constraintLeft_toLeftOf="@id/editTextEvent"
         android:textColor="@color/white"/>
     <Spinner
         android:id="@+id/eventTypeSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="3dp"
-        app:layout_constraintTop_toBottomOf="@id/editTextEvent"
+        app:layout_constraintTop_toBottomOf="@id/buttonPrev"
         app:layout_constraintLeft_toRightOf="@id/textViewEventType"
         />
     <ImageButton
@@ -102,19 +104,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ic_baseline_access_time_24"
-        android:layout_marginLeft="50dp"
+        android:layout_marginStart="50dp"
         android:layout_marginTop="3dp"
-        app:layout_constraintTop_toBottomOf="@id/editTextEvent"
+        app:layout_constraintTop_toBottomOf="@id/buttonPrev"
         app:layout_constraintLeft_toRightOf="@id/eventTypeSpinner"
         android:backgroundTint="@color/MyTealGreenColor"/>
     <TextView
         android:id="@+id/textViewTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="3dp"
-        android:text="00:00"
-        app:layout_constraintTop_toBottomOf="@id/editTextEvent"
+        android:text="@string/midnight_time"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/buttonPrev"
         app:layout_constraintLeft_toRightOf="@id/buttonSetTime"
         android:textColor="@color/white"/>
 
@@ -124,7 +127,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/recyclerViewCalendar"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginBottom="10dp"/>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -74,18 +74,27 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
 
         public void bindView(int position){
 
-            if(!sessionsList.get(position).isSESSION_FINISHED()){
-                cardView1.setCardBackgroundColor(ContextCompat.getColor(context, R.color.MyMatePinkColor));
-            }if(sessionsList.get(position).isSESSION_FINISHED()){
+            if(sessionsList.get(position).isSESSION_FINISHED()){
                 cardView1.setCardBackgroundColor(ContextCompat.getColor(context, R.color.MyTealGreenColor));
+            }else{
+                cardView1.setCardBackgroundColor(ContextCompat.getColor(context, R.color.MyMatePinkColor));
             }
             if (sessionsList.get(position).getSESSION_LENGTH().equals("10")) {
+                ivIcon1.setImageResource(R.drawable.ic_baseline_looks_one_24);
+            }
+            if (sessionsList.get(position).getSESSION_LENGTH().equals("15")) {
                 ivIcon1.setImageResource(R.drawable.ic_baseline_looks_one_24);
             }
             if (sessionsList.get(position).getSESSION_LENGTH().equals("20")) {
                 ivIcon1.setImageResource(R.drawable.ic_baseline_looks_two_24);
             }
+            if (sessionsList.get(position).getSESSION_LENGTH().equals("25")) {
+                ivIcon1.setImageResource(R.drawable.ic_baseline_looks_two_24);
+            }
             if (sessionsList.get(position).getSESSION_LENGTH().equals("30")) {
+                ivIcon1.setImageResource(R.drawable.ic_baseline_looks_3_24);
+            }
+            if (sessionsList.get(position).getSESSION_LENGTH().equals("35")) {
                 ivIcon1.setImageResource(R.drawable.ic_baseline_looks_3_24);
             }
             if (sessionsList.get(position).getSESSION_LENGTH().equals("40")) {

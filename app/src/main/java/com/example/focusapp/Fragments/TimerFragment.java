@@ -1,26 +1,19 @@
 package com.example.focusapp.Fragments;
 
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,19 +22,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.focusapp.Adapters.MyRecyclerAdapter;
 import com.example.focusapp.Adapters.SessionsRecyclerAdapter;
-import com.example.focusapp.AppLockListActivity;
 import com.example.focusapp.CountDownActivity;
 import com.example.focusapp.Database.MyDbHelper;
 import com.example.focusapp.Models.Session;
 import com.example.focusapp.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.Timer;
 
 
 public class TimerFragment extends Fragment implements AdapterView.OnItemSelectedListener{
@@ -93,7 +80,6 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
         ButtonStartPause.setTypeface(MMedium);
         dbHelper = new MyDbHelper(getActivity());
 
-        InitRecycleViewSessions();
         InitEventTypeSpinner();
 
         ButtonStartPause.setOnClickListener(new View.OnClickListener() {
@@ -106,13 +92,34 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
             }
         });
 
+        sessionList = allSessionsList();
+
+        sessionsAdapter = new SessionsRecyclerAdapter(getActivity(), sessionList);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
+        recycleViewTimer.setLayoutManager(gridLayoutManager);
+        recycleViewTimer.setAdapter(sessionsAdapter);
+
+        sessionsAdapter.notifyDataSetChanged();
+
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    public void getData()
+    {
+        sessionList = allSessionsList();
+        sessionsAdapter.setData(sessionList);
     }
 
 
     private void InitEventTypeSpinner() {
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.sessionLength, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.sessionLength, R.layout.spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sessionLengthSpinner.setAdapter(adapter);
         sessionLengthSpinner.setOnItemSelectedListener(this);
@@ -125,20 +132,6 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-
-    public void InitRecycleViewSessions(){
-
-        sessionList.clear();
-
-        sessionList = allSessionsList();
-
-        sessionsAdapter = new SessionsRecyclerAdapter(getActivity(), sessionList);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
-        recycleViewTimer.setLayoutManager(gridLayoutManager);
-        recycleViewTimer.setAdapter(sessionsAdapter);
-
-        sessionsAdapter.notifyDataSetChanged();
     }
 
     public ArrayList<Session> allSessionsList(){
@@ -154,9 +147,9 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
 
             boolean finished = true;
 
-            if(Integer.parseInt(res.getString(5)) == 1){
-                finished = false;
-            }if(Integer.parseInt(res.getString(5)) == 0){
+            if(Integer.parseInt(res.getString(6)) == 1){
+                finished = true;
+            }if(Integer.parseInt(res.getString(6)) == 0){
                 finished = false;
             }
 
@@ -164,7 +157,7 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
                     res.getString(2), res.getString(3),
                     res.getString(4), res.getString(5), finished );
 
-            mySessions.add(session);
+            mySessions.add(0, session);
         }
 
         return mySessions;

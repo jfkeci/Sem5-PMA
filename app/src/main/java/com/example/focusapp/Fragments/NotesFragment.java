@@ -173,9 +173,7 @@ public class NotesFragment extends Fragment {
         openArchiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent(getActivity(), NoteArchiveActivity.class);
-                startActivity(intent);*/
-                Intent intent = new Intent(getActivity(), AppLockListActivity.class);
+                Intent intent = new Intent(getActivity(), NoteArchiveActivity.class);
                 startActivity(intent);
             }
         });

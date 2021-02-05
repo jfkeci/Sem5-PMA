@@ -78,14 +78,13 @@
             android:orientation="vertical"
             android:padding="5dp"
             android:layout_marginTop="2dp"
-            android:gravity="left">
+            android:gravity="start">
 
                 <TextView
                     android:id="@+id/twNoteDateTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Content 1"
-                    android:textSize="8dp"
+                    android:textSize="8sp"
                     android:layout_margin="3dp"
                     android:textColor="@color/white"/>
 
@@ -93,17 +92,15 @@
                     android:id="@+id/twNoteTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Title 1"
                     android:textStyle="bold"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:layout_margin="3dp"
                     android:textColor="@color/white"/>
                 <TextView
                     android:id="@+id/twNoteContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Content 1"
-                    android:textSize="12dp"
+                    android:textSize="12sp"
                     android:layout_margin="3dp"
                     android:textColor="@color/white"/>
             </LinearLayout>
