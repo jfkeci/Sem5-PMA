@@ -30,6 +30,7 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -264,6 +265,14 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         calendarAdapter.setData(arrayListEvents);
     }
 
+    private void closeKeyboard(){
+        View view = getActivity().getCurrentFocus();
+        if(view != null){
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     private void InitCalendar() {
         ArrayList<Events> arrayListAllEvents = new ArrayList<>();
         arrayListAllEvents.clear();
@@ -392,6 +401,8 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                         textViewTime.setText("00:00");
                         editTextEvent.setText("Add new event");
+
+                        closeKeyboard();
 
                     }else{
                         makeMyToast("Failed to add new " + eventTypeSelected);
