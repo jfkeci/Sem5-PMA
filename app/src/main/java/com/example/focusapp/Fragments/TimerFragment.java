@@ -53,10 +53,9 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
     private static final long START_TIME_IN_MILLIS = 60000;
     private long TimeLeftInMillis = START_TIME_IN_MILLIS;
 
-    private Button ButtonStartPause, ButtonDisableApps;
+    private Button ButtonStartPause;
     private ImageView ivClock, ivArrow;
     private Spinner sessionLengthSpinner;
-    private TextView tvCredits;
 
     ArrayList<Session> sessionList = new ArrayList<>();
 
@@ -86,30 +85,17 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
         Typeface MMedium = Typeface.createFromAsset(getActivity().getAssets(), "fonts/MLight.ttf");
 
         ButtonStartPause = v.findViewById(R.id.buttonStartPause);
-        ButtonDisableApps = v.findViewById(R.id.buttonDisableApps);
         ivClock = v.findViewById(R.id.ivTimerCircle);
         ivArrow = v.findViewById(R.id.ivTimerArrow);
         recycleViewTimer = v.findViewById(R.id.recycleViewTimer);
         sessionLengthSpinner = v.findViewById(R.id.sessionLengthSpinner);
-        tvCredits = v.findViewById(R.id.textViewCredits);
 
         ButtonStartPause.setTypeface(MMedium);
-        ButtonDisableApps.setTypeface(MMedium);
-
         dbHelper = new MyDbHelper(getActivity());
-        String myCredits = CountCredits();
-        tvCredits.setText(myCredits);
 
         InitRecycleViewSessions();
         InitEventTypeSpinner();
 
-        ButtonDisableApps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AppLockListActivity.class);
-                startActivity(intent);
-            }
-        });
         ButtonStartPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,24 +126,6 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-    public String CountCredits(){
-        int credits = 0;
-        String sCredits="";
-        ArrayList<Session> mySessions = allSessionsList();
-
-        for (Session session : mySessions){
-            float points = Float.parseFloat(session.getSESSION_POINTS());
-            credits+=points;
-        }
-        if(credits > 0){
-            sCredits = "You have: " +String.valueOf(credits)+ "\n working points";
-        }else{
-            sCredits = "Try, you can do it";
-        }
-        return sCredits;
-    }
-
 
     public void InitRecycleViewSessions(){
 

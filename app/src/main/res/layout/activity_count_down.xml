@@ -64,16 +64,4 @@
         android:layout_margin="15dp"
         android:padding="5dp"
         android:scrollbars="vertical"/>
-    <TextView
-        android:id="@+id/textViewCredits"
-        android:layout_width="3dp"
-        android:layout_height="18dp"
-        android:layout_marginLeft="20dp"
-        android:layout_margin="20dp"
-        android:textColor="@android:color/white"
-        android:textSize="15sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycleViewTimer" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

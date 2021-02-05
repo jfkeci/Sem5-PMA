@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/cw"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="6dp"
     android:layout_margin="6dp"
@@ -16,44 +16,61 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp">
         <ImageView
-            android:id="@+id/ivUpArchive"
+            android:id="@+id/ivLeftDelete"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="5dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_baseline_arrow_upward_24"/>
+            android:src="@drawable/ic_baseline_keyboard_arrow_left_24"/>
         <ImageView
+            android:id="@+id/ivUpEdit"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="5dp"
-            app:layout_constraintLeft_toRightOf="@id/ivUpArchive"
+            app:layout_constraintRight_toLeftOf="@id/ivRightUnarchive"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_baseline_edit_24"/>
+            android:src="@drawable/ic_baseline_unarchive_24"/>
         <ImageView
+            android:id="@+id/ivPress"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="5dp"
-            app:layout_constraintRight_toLeftOf="@id/ivDownArchive"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/ivPressArchive"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_baseline_touch_app_24"/>
+
+        <ImageView
+            android:id="@+id/ivPressArchive"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/ivPress"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_baseline_edit_24" />
+
+        <ImageView
+            android:id="@+id/ivDownDelete"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintLeft_toRightOf="@id/ivLeftDelete"
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/ic_baseline_delete_sweep_white"/>
+
         <ImageView
-            android:id="@+id/ivDownArchive"
+            android:id="@+id/ivRightUnarchive"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="5dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_baseline_arrow_downward_24"/>
-        <View
-            android:id="@+id/cardLineArchive"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            app:layout_constraintTop_toBottomOf="@id/ivDownArchive"
-            android:layout_marginTop="2dp"/>
+            android:src="@drawable/ic_baseline_keyboard_arrow_right_24"/>
 
         <LinearLayout
-            app:layout_constraintTop_toBottomOf="@id/cardLineArchive"
+            app:layout_constraintTop_toBottomOf="@id/ivRightUnarchive"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"

@@ -38,7 +38,7 @@ public class CountDownActivity extends AppCompatActivity {
     public long START_TIME_IN_MILLIS;
     public long TimeLeftInMillis;
 
-    private TextView TextViewCountDown, TextViewCredits;
+    private TextView TextViewCountDown;
     private Button ButtonStartPause;
     ImageView ivClock, ivArrow;
 
@@ -58,7 +58,7 @@ public class CountDownActivity extends AppCompatActivity {
     public SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy");
     public SimpleDateFormat sdfTime = new SimpleDateFormat("'at' HH:mm");
 
-    Session session;
+    Session newSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,6 @@ public class CountDownActivity extends AppCompatActivity {
 
 
         TextViewCountDown = findViewById(R.id.textViewCountdown);
-        TextViewCredits = findViewById(R.id.textViewCredits);
         ButtonStartPause = findViewById(R.id.buttonStartPauseCoundown);
         ivClock = findViewById(R.id.ivTimerCircle);
         ivArrow = findViewById(R.id.ivTimerArrow);
@@ -81,8 +80,8 @@ public class CountDownActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         final String length_string = intent.getStringExtra("session_length");
         final long session_length = getSessionLength(length_string);
-        //START_TIME_IN_MILLIS = session_length;
-        START_TIME_IN_MILLIS = 2000;
+        START_TIME_IN_MILLIS = session_length;
+        //START_TIME_IN_MILLIS = 2000;
         TimeLeftInMillis = START_TIME_IN_MILLIS;
         //int minutes = (int)START_TIME_IN_MILLIS / 1000 / 60;
         int seconds = (int)START_TIME_IN_MILLIS / 1000;
@@ -97,20 +96,17 @@ public class CountDownActivity extends AppCompatActivity {
         User user = dbHelper.getUser();
         uid = user.getUser_id();
 
-        session = new Session();
-        session.setUSER_ID(uid);
-        session.setSESSION_DATE(sessionDate);
-        session.setSESSION_TIME(sessionTime);
-        session.setSESSION_LENGTH(getSessionPoints(length_string));
-        session.setSESSION_POINTS(sessionPoints);
+        newSession = new Session();
+        newSession.setUSER_ID(uid);
+        newSession.setSESSION_DATE(sessionDate);
+        newSession.setSESSION_TIME(sessionTime);
+        newSession.setSESSION_LENGTH(getSessionPoints(length_string));
+        newSession.setSESSION_POINTS(sessionPoints);
 
         anim = ObjectAnimator.ofFloat(ivArrow, "rotation", 0, 360);
         anim.setDuration(1000);
         anim.setRepeatCount(seconds);
         anim.setRepeatMode(ObjectAnimator.RESTART);
-
-        String creditCount = CountCredits();
-        TextViewCredits.setText(creditCount);
 
         InitRecycleViewSessions();
 
@@ -148,8 +144,8 @@ public class CountDownActivity extends AppCompatActivity {
                 ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
                 TimeLeftInMillis = START_TIME_IN_MILLIS;
                 updateCountDownText();
-                session.setSESSION_FINISHED(true);
-                dbHelper.addNewSession(session);
+                newSession.setSESSION_FINISHED(true);
+                dbHelper.addNewSession(newSession);
 
                 CountDownActivity.super.onBackPressed();
             }
@@ -164,12 +160,14 @@ public class CountDownActivity extends AppCompatActivity {
         ButtonStartPause.setText("Continue");
         ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
     }
+
     private void resetTimer(){
         TimeLeftInMillis = START_TIME_IN_MILLIS;
         updateCountDownText();
         ButtonStartPause.setText("Start");
         ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
     }
+
     private void updateCountDownText(){
         int minutes = (int) (TimeLeftInMillis / 1000) / 60;
         int seconds = (int) (TimeLeftInMillis / 1000) % 60;
@@ -182,7 +180,7 @@ public class CountDownActivity extends AppCompatActivity {
     private void showMessage(){
         final AlertDialog areYouSure = new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
-                .setMessage("You are going to lose credits")
+                .setMessage("You can do it, just continue")
                 .setPositiveButton("Ok", null)
                 .setNegativeButton("Continue", null)
                 .show();
@@ -192,8 +190,8 @@ public class CountDownActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(TimerPaused){
-                    session.setSESSION_FINISHED(false);
-                    dbHelper.addNewSession(session);
+                    newSession.setSESSION_FINISHED(false);
+                    dbHelper.addNewSession(newSession);
                     areYouSure.dismiss();
                     CountDownActivity.super.onBackPressed();
                 }else{
@@ -225,23 +223,6 @@ public class CountDownActivity extends AppCompatActivity {
         recycleViewTimer.setAdapter(sessionsAdapter);
 
         sessionsAdapter.notifyDataSetChanged();
-    }
-
-    public String CountCredits(){
-        int credits = 0;
-        String sCredits="";
-        ArrayList<Session> mySessions = allSessionsList();
-
-        for (Session session : mySessions){
-            float points = Float.parseFloat(session.getSESSION_POINTS());
-            credits+=points;
-        }
-        if(credits > 0){
-            sCredits = "You have: " +String.valueOf(credits)+ " credits";
-        }else{
-            sCredits = "Try, you can do it";
-        }
-        return sCredits;
     }
 
     public ArrayList<Session> allSessionsList(){

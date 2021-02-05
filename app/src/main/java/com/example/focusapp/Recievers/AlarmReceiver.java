@@ -20,11 +20,8 @@ import com.example.focusapp.R;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
-
-
 
         String event = intent.getStringExtra("event_content");
         String date = intent.getStringExtra("event_date_time");
@@ -42,7 +39,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-
         Notification notification = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.ic_baseline_check_24)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -55,20 +51,5 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(notificationId, notification);
 
-        /*String channelId = intent.getStringExtra("channel_id");
-        String title = intent.getStringExtra("event_content");
-        int event_id = Integer.parseInt(intent.getStringExtra("event_id"));
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_baseline_calendar_today_24)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setContentTitle(title)
-                .setContentText(String.valueOf(event_id))
-                .setSmallIcon(R.drawable.ic_baseline_check_24)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-        notificationManagerCompat.notify(event_id, builder.build());
-
-        //notificationManagerCompat.cancel(200);*/
     }
 }

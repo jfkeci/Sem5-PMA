@@ -393,12 +393,16 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        int finished = 1;
+        int finished = 0;
+
+        String points = "";
 
         if(session.isSESSION_FINISHED()){
             finished = 1;
+            points = String.valueOf(session.getSESSION_POINTS());
         }else{
             finished = 0;
+            points = "-"+String.valueOf(session.getSESSION_POINTS());
         }
 
         ContentValues contentValues = new ContentValues();

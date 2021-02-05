@@ -65,21 +65,21 @@ public class ArchiveNotesRecyclerAdapter extends RecyclerView.Adapter<ArchiveNot
             String mainContent = "";
             String mainTitle = "";
 
-            if(content.length() > 45){
-                for(int i=0;i<45;i++){
+            if(content.length() > 200){
+                for(int i=0;i<200;i++){
                     mainContent = mainContent+content.charAt(i);
                 }
                 mainContent = mainContent+"...";
-            }if(content.length()<45){
+            }if(content.length()<200){
                 mainContent = content;
             }
 
-            if(title.length() > 14){
-                for(int i=0;i<14;i++){
+            if(title.length() > 30){
+                for(int i=0;i<30;i++){
                     mainTitle = mainTitle+title.charAt(i);
                 }
                 mainTitle = mainTitle+"...";
-            }if(title.length()<14){
+            }if(title.length()<30){
                 mainTitle = title;
             }
 

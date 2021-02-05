@@ -55,11 +55,6 @@ public class NotesFragment extends Fragment {
 
     public  ArrayList<Notes> myNotes = new ArrayList<>();
 
-    public boolean deleteyn=true;
-    public boolean updateyn=true;
-
-    public int update_position=0;
-
     MyDbHelper dbHelper;
 
     public String uid;
@@ -105,7 +100,7 @@ public class NotesFragment extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
         notesAdapter.notifyDataSetChanged();
 
         notesAdapter.setOnLongItemClickListener(new NotesRecyclerAdapter.OnLongNoteClickedListener() {
@@ -178,7 +173,9 @@ public class NotesFragment extends Fragment {
         openArchiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NoteArchiveActivity.class);
+                /*Intent intent = new Intent(getActivity(), NoteArchiveActivity.class);
+                startActivity(intent);*/
+                Intent intent = new Intent(getActivity(), AppLockListActivity.class);
                 startActivity(intent);
             }
         });

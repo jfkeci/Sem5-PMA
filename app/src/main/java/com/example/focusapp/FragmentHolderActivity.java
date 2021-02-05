@@ -8,12 +8,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 
 import com.example.focusapp.Adapters.AppPagerAdapter;
-import com.example.focusapp.Database.MyDbHelper;
-import com.example.focusapp.Fragments.CalendarFragment;
-import com.example.focusapp.Fragments.TimerFragment;
-import com.example.focusapp.Fragments.ToDoFragment;
-import com.example.focusapp.Models.Events;
-import com.example.focusapp.Singletons.ToDoFragmentSingleton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 

@@ -24,25 +24,44 @@
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/ic_baseline_arrow_upward_24"/>
         <ImageView
+            android:id="@+id/ivUpEdit"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="5dp"
             app:layout_constraintLeft_toRightOf="@id/ivUp"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_baseline_edit_24"/>
+            android:src="@drawable/ic_baseline_unarchive_24"/>
         <ImageView
+            android:id="@+id/ivPress"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintLeft_toRightOf="@id/ivUpEdit"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_baseline_touch_app_24"/>
+        <ImageView
+            android:id="@+id/ivPressArchive"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="5dp"
             app:layout_constraintRight_toLeftOf="@id/ivDown"
             app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_baseline_edit_24" />
+        <ImageView
+            android:id="@+id/ivDownDelete"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
             android:src="@drawable/ic_baseline_delete_sweep_white"/>
         <ImageView
             android:id="@+id/ivDown"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="5dp"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/ivDownDelete"
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/ic_baseline_arrow_downward_24"/>
         <View
@@ -66,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Content 1"
-                    android:textSize="10dp"
+                    android:textSize="8dp"
                     android:layout_margin="3dp"
                     android:textColor="@color/white"/>
 
@@ -76,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:text="Title 1"
                     android:textStyle="bold"
-                    android:textSize="16dp"
+                    android:textSize="14dp"
                     android:layout_margin="3dp"
                     android:textColor="@color/white"/>
                 <TextView
@@ -84,10 +103,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Content 1"
-                    android:textSize="13dp"
+                    android:textSize="12dp"
                     android:layout_margin="3dp"
                     android:textColor="@color/white"/>
             </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
