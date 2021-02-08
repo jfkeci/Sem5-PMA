@@ -10,17 +10,10 @@ import androidx.annotation.Nullable;
 
 import com.example.focusapp.Models.AppModel;
 import com.example.focusapp.Models.Events;
-import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.Session;
 import com.example.focusapp.Models.User;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
 public class MyDbHelper extends SQLiteOpenHelper {
-
     //database name
     public static final String DATABASE_NAME = "focus.db";
     //table events
@@ -62,7 +55,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public static final String COL51 = "APP_NAME";
     public static final String COL52 = "APP_STATUS";
     public static final String COL53 = "PACKAGE_NAME";
-
 
     public MyDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -150,11 +142,11 @@ public class MyDbHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_EVENTS+" WHERE CHECKED='" + check + "'", null);
         return res;
     }
-    public Cursor getAllEvents(){
+    /*public Cursor getAllEvents(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_EVENTS, null);
         return res;
-    }
+    }*/
     public Cursor readEventId(String type, String content, String datetime){
         SQLiteDatabase db = this.getWritableDatabase();
         String [] Projections = {COL11};
@@ -162,16 +154,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
         String [] SelectionArgs = {type, content, datetime};
 
         return db.query(TABLE_EVENTS, Projections, Selection, SelectionArgs, null, null, null);
-    }
-    public int getNewEventId(){
-        String selectQuery= "SELECT * FROM " + TABLE_EVENTS +" ORDER BY "+ COL11 +" DESC LIMIT 1";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery(selectQuery, null);
-        int event_id = 0;
-        if(res.moveToFirst())
-            event_id  =  Integer.parseInt(res.getString( 0 ));
-        res.close();
-        return event_id;
     }
     public boolean eventSetChecked(String EVENT_ID){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -191,13 +173,11 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         return true;
     }
-
     public Integer deleteEvent(String EVENT_ID){
         SQLiteDatabase db = this.getWritableDatabase();
 
         return db.delete(TABLE_EVENTS, "EVENT_ID = ?", new String[]{EVENT_ID});
     }
-
     public boolean setCurrentUser(String id, String username, String email){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM "+TABLE_USER);
@@ -292,7 +272,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return res;
     }
     public boolean updateNote(int id, String title, String content, String datetime){
-
         String nid = String.valueOf(id);
 
         SQLiteDatabase db = this.getWritableDatabase();

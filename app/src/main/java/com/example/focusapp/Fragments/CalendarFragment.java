@@ -1,10 +1,7 @@
 package com.example.focusapp.Fragments;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -13,20 +10,16 @@ import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +35,7 @@ import android.widget.Toast;
 
 import com.example.focusapp.Adapters.MyRecyclerAdapter;
 import com.example.focusapp.Database.MyDbHelper;
-import com.example.focusapp.MainActivity;
 import com.example.focusapp.Models.Events;
-import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.User;
 import com.example.focusapp.R;
 import com.example.focusapp.Recievers.AlarmReceiver;
@@ -52,16 +43,11 @@ import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.snackbar.Snackbar;
 
-
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -103,7 +89,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
         calContext = getActivity();
 
-
         textViewDate=v.findViewById(R.id.textViewDate);
         textViewTime = v.findViewById(R.id.textViewTime);
 
@@ -131,6 +116,17 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         InitButtonSaveEvent();
 
         InitRecycleViewFunct(dateSelected);
+
+        editTextEvent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    recyclerView.setVisibility(View.INVISIBLE);
+                }else{
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         return v;
     }
@@ -235,7 +231,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
-
     private void InitEventTypeSpinner(View v) {
         Spinner eventTypeSpinner = v.findViewById(R.id.eventTypeSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.eventTypes, R.layout.spinner_item);
@@ -243,7 +238,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         eventTypeSpinner.setAdapter(adapter);
         eventTypeSpinner.setOnItemSelectedListener(this);
     }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         eventTypeSelected = parent.getItemAtPosition(position).toString();
@@ -252,20 +246,18 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
     @Override
     public void onResume() {
         super.onResume();
         getData();
     }
-
     public void getData()
     {
         arrayListEvents = allEventsByDateList(dateSelected, false);
         calendarAdapter.setData(arrayListEvents);
     }
-
     private void closeKeyboard(){
+        recyclerView.setVisibility(View.VISIBLE);
         View view = getActivity().getCurrentFocus();
         if(view != null){
             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -339,6 +331,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         buttonSetTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeKeyboard();
                 TimePickerDialog timePickerDialog = new TimePickerDialog(
                         getActivity(),
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
@@ -400,8 +393,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
                         SetEventNotification(newEvent);
 
-                        textViewTime.setText("00:00");
-                        editTextEvent.setText("Add new event");
+                        editTextEvent.setText("");
 
                         closeKeyboard();
 

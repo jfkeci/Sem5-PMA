@@ -3,7 +3,6 @@
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,10 +11,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,9 +20,7 @@ import android.widget.EditText;
 import com.example.focusapp.Adapters.AppsRecyclerAdapter;
 import com.example.focusapp.Database.MyDbHelper;
 import com.example.focusapp.Models.AppModel;
-import com.example.focusapp.Models.Session;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

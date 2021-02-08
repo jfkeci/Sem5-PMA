@@ -11,7 +11,7 @@
         android:id="@+id/etNoteTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:ems="10"
@@ -23,6 +23,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/etNoteContent"
+        app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/custom_edit_text"
         android:padding="5dp"/>
     <EditText

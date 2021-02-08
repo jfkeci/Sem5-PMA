@@ -12,15 +12,10 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.focusapp.Models.Notes;
 import com.example.focusapp.Models.Session;
 import com.example.focusapp.R;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
     Context context;

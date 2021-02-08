@@ -10,19 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.focusapp.Adapters.ArchiveNotesRecyclerAdapter;
-import com.example.focusapp.Adapters.MyRecyclerAdapter;
-import com.example.focusapp.Adapters.NotesRecyclerAdapter;
 import com.example.focusapp.Database.MyDbHelper;
 import com.example.focusapp.Models.Notes;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
@@ -87,6 +83,7 @@ public class NoteArchiveActivity extends AppCompatActivity {
                             if(undone){
                                 archivedNotesList.add(position, deletedNote);
                                 notesArchiveAdapter.notifyItemInserted(position);
+                                dbHelper.setNoteArchived(Integer.parseInt(note_id), 1);
                             }else{
                                 makeMyToast("Something went wrong!");
                             }
@@ -98,7 +95,7 @@ public class NoteArchiveActivity extends AppCompatActivity {
 
                     int noteId = unarchivedNote.getNOTE_ID();
 
-                    boolean archived = dbHelper.setNoteArchived(noteId, 1);
+                    boolean archived = dbHelper.setNoteArchived(noteId, 0);
 
                     if(archived){
                         archivedNotesList.remove(unarchivedNote);
@@ -110,7 +107,7 @@ public class NoteArchiveActivity extends AppCompatActivity {
                     Snackbar.make(recyclerViewArchive, "Removed from archive", Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            boolean unarchived = dbHelper.setNoteArchived(noteId, 0);
+                            boolean unarchived = dbHelper.setNoteArchived(noteId, 1);
                             if(unarchived){
                                 archivedNotesList.add(position, unarchivedNote);
                                 notesArchiveAdapter.notifyItemInserted(position);
@@ -173,9 +170,6 @@ public class NoteArchiveActivity extends AppCompatActivity {
 
         Cursor res = dbHelper.getAllArchivedNotes();
 
-        if(res.getCount() == 0){
-            makeMyToast("Error, No notes found");
-        }
         StringBuffer buffer = new StringBuffer();
         while(res.moveToNext()){
             int id = Integer.parseInt(res.getString(0));

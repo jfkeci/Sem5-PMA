@@ -8,27 +8,17 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.focusapp.Adapters.SessionsRecyclerAdapter;
 import com.example.focusapp.Database.MyDbHelper;
-import com.example.focusapp.Fragments.TimerFragment;
 import com.example.focusapp.Models.Session;
 import com.example.focusapp.Models.User;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -179,24 +169,23 @@ public class CountDownActivity extends AppCompatActivity {
         final AlertDialog areYouSure = new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
                 .setMessage("You can do it, just continue")
-                .setPositiveButton("Ok", null)
+                .setPositiveButton("Quit", null)
                 .setNegativeButton("Continue", null)
                 .show();
 
-        Button buttonOk = areYouSure.getButton(AlertDialog.BUTTON_POSITIVE);
-        buttonOk.setOnClickListener(new View.OnClickListener() {
+        Button buttonQuit = areYouSure.getButton(AlertDialog.BUTTON_POSITIVE);
+        buttonQuit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(TimerPaused){
                     newSession.setSESSION_FINISHED(false);
                     dbHelper.addNewSession(newSession);
-                    areYouSure.dismiss();
                     CountDownActivity.super.onBackPressed();
+                    areYouSure.dismiss();
                 }else{
-                    areYouSure.dismiss();
                     CountDownActivity.super.onBackPressed();
+                    areYouSure.dismiss();
                 }
-
             }
         });
         Button buttonCancel = areYouSure.getButton(AlertDialog.BUTTON_NEGATIVE);
@@ -212,7 +201,6 @@ public class CountDownActivity extends AppCompatActivity {
         });
     }
     public void InitRecycleViewSessions(){
-
         sessionsAdapter = new SessionsRecyclerAdapter(this, allSessionsList());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
         recycleViewTimer.setLayoutManager(gridLayoutManager);
@@ -277,7 +265,6 @@ public class CountDownActivity extends AppCompatActivity {
         }
         return 0;
     }
-
     public String getSessionPoints(String sessionLength){
         if(sessionLength.contains("10")){
             return "10";
@@ -301,4 +288,5 @@ public class CountDownActivity extends AppCompatActivity {
     public void onBackPressed() {
         showMessage();
     }
+
 }

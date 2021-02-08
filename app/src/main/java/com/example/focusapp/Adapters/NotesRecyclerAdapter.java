@@ -2,31 +2,22 @@ package com.example.focusapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.focusapp.Database.MyDbHelper;
-import com.example.focusapp.Models.AppModel;
-import com.example.focusapp.Models.Events;
 import com.example.focusapp.Models.Notes;
 import com.example.focusapp.NoteEditActivity;
 import com.example.focusapp.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdapter.NotesViewHolder> {
     Context context;

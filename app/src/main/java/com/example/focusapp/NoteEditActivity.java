@@ -59,8 +59,6 @@ public class NoteEditActivity extends AppCompatActivity {
             dbNotes.add(0, note);
         }
 
-
-
         etTitle.setText(dbNotes.get(0).getNOTE_TITLE());
         etContent.setText(dbNotes.get(0).getNOTE_CONTENT());
 
