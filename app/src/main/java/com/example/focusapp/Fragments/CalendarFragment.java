@@ -202,7 +202,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                         InitCalendar();
                         RemoveEventNotification(checkedEvent.getEVENT_ID());
                     }else{
-                        makeMyToast("Failed");
+                        makeMyToast("Something went wrong!");
                     }
                     Snackbar.make(recyclerView, checkedEvent.getEVENT_CONTENT(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
@@ -214,7 +214,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                                 InitCalendar();
                                 SetEventNotification(checkedEvent);
                             }else{
-                                makeMyToast("Failed");
+                                makeMyToast("Try again");
                             }
                         }
                     }).show();
@@ -379,6 +379,7 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
                 if(eventContent.length()<1){
                     makeMyToast("Please write a description for your "+eventTypeSelected);
                 }
+
                 if(eventContent.length()>1){
 
                     User currentUser = dbHelper.getUser();
@@ -479,30 +480,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
 
     private void SetEventNotification(Events event){
 
-        SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
-        SimpleDateFormat sdfMonth = new SimpleDateFormat("MM");
-        SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
-        SimpleDateFormat sdfHour = new SimpleDateFormat("HH");
-        SimpleDateFormat sdfMinute = new SimpleDateFormat("mm");
-
-        int nyear, nmonth, nday, nhour, nminute;
-
-        Date myDate;
-
-        try{
-
-            myDate = sdf.parse(event.getEVENT_DATE_TIME());
-
-            nyear = Integer.parseInt(sdfYear.format(myDate));
-            nmonth = Integer.parseInt(sdfMonth.format(myDate));
-            nday = Integer.parseInt(sdfDay.format(myDate));
-            nhour = Integer.parseInt(sdfHour.format(myDate));
-            nminute = Integer.parseInt(sdfMinute.format(myDate));
-
-        }catch(ParseException e){
-            e.printStackTrace();
-        }
-
         Intent intent = new Intent(getActivity().getBaseContext(), AlarmReceiver.class);
 
         int ev_id = event.getEVENT_ID();
@@ -524,7 +501,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         }
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, atTime, pendingIntent);
-
     }
 
     private void RemoveEventNotification(int ev_id){
@@ -558,9 +534,6 @@ public class CalendarFragment extends Fragment  implements AdapterView.OnItemSel
         builder.setTitle(title);
         builder.setMessage(message);
         builder.show();
-    }
-    public void makeMyLog(String message, String thing){
-        Log.d("Logged item", ""+message+" :"+thing);
     }
 
     public String makeDateAndTime(String date, String time){

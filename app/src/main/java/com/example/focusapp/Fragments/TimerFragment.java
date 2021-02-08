@@ -162,20 +162,4 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
 
         return mySessions;
     }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (hidden) {
-            makeMyToast("is not on screen");
-        }
-        else
-        {
-            makeMyToast("on screen");
-        }
-    }
-
-    private void makeMyToast(String message){
-        Toast.makeText(getActivity().getBaseContext(), ""+message, Toast.LENGTH_LONG).show();
-    }
 }

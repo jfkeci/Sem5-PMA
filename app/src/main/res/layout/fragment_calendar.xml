@@ -62,7 +62,7 @@
         android:layout_margin="20dp"
         android:ems="10"
         android:inputType="textShortMessage"
-        android:text="@string/event_text"
+        android:hint="@string/event_text"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -112,10 +112,6 @@ public class NotesFragment extends Fragment {
             }
         });
 
-        if(myNotes.isEmpty()){
-            makeMyToast("No notes");
-        }
-
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP | ItemTouchHelper.DOWN) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -213,7 +209,6 @@ public class NotesFragment extends Fragment {
                 }else{
                     boolean isInserted = dbHelper.addNewNote(uid, title, content, noteDateTime);
                     if(isInserted){
-                        makeMyToast("Note added");
                         etNoteTitle.setText("");
                         etNoteContent.setText("");
                         getData();
@@ -233,9 +228,6 @@ public class NotesFragment extends Fragment {
 
         Cursor res = dbHelper.getAllUnarchivedNotes();
 
-        if(res.getCount() == 0){
-            makeMyToast("Error, No notes found");
-        }
         StringBuffer buffer = new StringBuffer();
         while(res.moveToNext()){
             int id = Integer.parseInt(res.getString(0));
@@ -260,8 +252,5 @@ public class NotesFragment extends Fragment {
 
     private void makeMyToast(String message){
         Toast.makeText(getActivity().getBaseContext(), "Message:  "+message, Toast.LENGTH_SHORT).show();
-    }
-    public void makeMyLog(String message, String thing){
-        Log.d("Logged item", ""+message+" :"+thing);
     }
 }

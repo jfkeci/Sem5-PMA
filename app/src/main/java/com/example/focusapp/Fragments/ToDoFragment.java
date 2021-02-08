@@ -1,9 +1,12 @@
 package com.example.focusapp.Fragments;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.os.Build;
@@ -29,9 +32,13 @@ import com.example.focusapp.Adapters.MyRecyclerAdapter;
 import com.example.focusapp.Database.MyDbHelper;
 import com.example.focusapp.Models.Events;
 import com.example.focusapp.R;
+import com.example.focusapp.Recievers.AlarmReceiver;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -44,6 +51,9 @@ public class ToDoFragment extends Fragment {
     public ConstraintLayout constraintLayoutToDo, constraintLayoutChecked;
     public TextView tw1, tw2;
 
+    public long atTime;
+
+    public SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
 
     public MyDbHelper dbHelper;
     public MyRecyclerAdapter todoAdapter;
@@ -95,11 +105,6 @@ public class ToDoFragment extends Fragment {
             }
         });
 
-
-
-
-        //------------------------------RecycleView Checked Events------------------------------
-
         eventsCheckedList = allEventsList(1);
         checkedAdapter = new MyRecyclerAdapter(getActivity(), eventsCheckedList, 1);
         recyclerViewChecked.setAdapter(checkedAdapter);
@@ -107,12 +112,6 @@ public class ToDoFragment extends Fragment {
         recyclerViewChecked.setLayoutManager(checkedLayoutManager);
 
         dbHelper = new MyDbHelper(getActivity());
-
-
-        //------------------------------RecycleView Checked Events------------------------------
-
-
-        //------------------------------RecycleView  Events------------------------------
 
         eventsList = allEventsList(0);
         todoAdapter = new MyRecyclerAdapter(getActivity(), eventsList, 0);
@@ -140,6 +139,7 @@ public class ToDoFragment extends Fragment {
                     if(deleted == 1){
                         eventsList.remove(deletedEvent);
                         todoAdapter.notifyItemRemoved(position);
+                        RemoveEventNotification(deletedEvent.getEVENT_ID());
                     }
 
                     Snackbar.make(recyclerViewToDo, deletedEvent.getEVENT_CONTENT(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
@@ -151,6 +151,7 @@ public class ToDoFragment extends Fragment {
                             if(undone){
                                 eventsList.add(position, deletedEvent);
                                 todoAdapter.notifyItemInserted(position);
+                                SetEventNotification(deletedEvent);
                             }else{
                                 makeMyToast("Something went wrong!");
                             }
@@ -170,27 +171,27 @@ public class ToDoFragment extends Fragment {
                         makeMyToast("Awesome!");
                         eventsCheckedList.add(checkedEvent);
                         checkedAdapter.notifyDataSetChanged();
+                        RemoveEventNotification(checkedEvent.getEVENT_ID());
                     }else{
-                        makeMyToast("Failed");
+                        makeMyToast("Something went wrong!");
                     }
                     Snackbar.make(recyclerViewToDo, checkedEvent.getEVENT_CONTENT(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             boolean checked = dbHelper.eventUncheck(String.valueOf(checkedEvent.getEVENT_ID()));
                             if(checked){
-                                makeMyToast("Unchecked");
                                 eventsList.add(position, checkedEvent);
                                 todoAdapter.notifyItemInserted(position);
                                 eventsCheckedList.remove(checkedEvent);
                                 checkedAdapter.notifyDataSetChanged();
+                                SetEventNotification(checkedEvent);
                             }else{
-                                makeMyToast("Failed");
+                                makeMyToast("Something went wrong!");
                             }
                         }
                     }).show();
                 }
             }
-
             @Override
             public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
@@ -206,9 +207,6 @@ public class ToDoFragment extends Fragment {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerViewToDo);
-
-
-        //------------------------------RecycleView  Events------------------------------
 
         return todoView;
     }
@@ -263,8 +261,41 @@ public class ToDoFragment extends Fragment {
                 }
             }
         }
-
         return myEvents;
+    }
+
+    private void SetEventNotification(Events event){
+
+        Intent intent = new Intent(getActivity().getBaseContext(), AlarmReceiver.class);
+
+        int ev_id = event.getEVENT_ID();
+
+        intent.putExtra("event_id", String.valueOf(ev_id));
+        intent.putExtra("event_date_time", event.getEVENT_DATE_TIME());
+        intent.putExtra("event_content", event.getEVENT_CONTENT());
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), ev_id, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        try{
+            Date date = sdf.parse(event.getEVENT_DATE_TIME());
+
+            atTime = date.getTime();
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, atTime, pendingIntent);
+    }
+
+    private void RemoveEventNotification(int ev_id){
+
+        Intent intent = new Intent(getActivity().getBaseContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), ev_id, intent, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+
     }
 
     public void createNotificationChannel(){
@@ -282,15 +313,5 @@ public class ToDoFragment extends Fragment {
 
     private void makeMyToast(String message){
         Toast.makeText(getActivity(), "Message:  "+message, Toast.LENGTH_LONG).show();
-    }
-    public void makeMyMessage(String title, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
-    }
-    public void makeMyLog(String message, String thing){
-        Log.d("Logged item", ""+message+" :"+thing);
     }
 }

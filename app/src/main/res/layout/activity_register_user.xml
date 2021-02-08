@@ -81,7 +81,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bannerSlogan"
-        android:background="@drawable/custom_edit_text" />
+        android:background="@drawable/custom_edit_text"/>
 
     <Button
         android:id="@+id/registerButton"

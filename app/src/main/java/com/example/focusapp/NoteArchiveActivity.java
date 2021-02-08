@@ -154,6 +154,18 @@ public class NoteArchiveActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    public void getData()
+    {
+        archivedNotesList = allArchivedNotesList();
+        notesArchiveAdapter.setData(archivedNotesList);
+    }
+
     public ArrayList<Notes> allArchivedNotesList(){
         ArrayList<Notes> dbNotes = new ArrayList<>();
 

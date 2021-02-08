@@ -7,9 +7,9 @@
     tools:context=".Fragments.ToDoFragment"
     android:background="#211D44">
 
-    <TextView
+    <Button
         android:id="@+id/tw1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/pending"
         android:textStyle="bold"
@@ -18,7 +18,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_margin="10dp"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:background="@drawable/button_green_square_bg"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutToDo"
@@ -42,9 +45,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
+
+    <Button
         android:id="@+id/tw2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/done"
         android:textStyle="bold"
@@ -53,7 +57,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="50dp"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:background="@drawable/button_green_square_bg"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutChecked"

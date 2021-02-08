@@ -297,10 +297,6 @@ public class CountDownActivity extends AppCompatActivity {
         return "0";
     }
 
-    public void makeMyToast(String message){
-        Toast.makeText(this, " "+message, Toast.LENGTH_LONG).show();
-    }
-
     @Override
     public void onBackPressed() {
         showMessage();
